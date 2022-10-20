@@ -56,7 +56,7 @@ def update_enabled_flag(spn: SPN):
             continue
 
 def fire_transition(transition: Transition):
-    "Fires a transition"
+    """Fires a transition"""
     output_arcs = transition.output_arcs
     input_arcs = transition.input_arcs
 
@@ -80,7 +80,7 @@ def fire_transition(transition: Transition):
     transition.reset()
 
 def find_next_firing(spn: SPN):
-    "Finds the next transition that need to be fired based on min(firing times)"
+    """Finds the next transition that need to be fired based on min(firing times)"""
     firing_times = {}
     transition: Transition
     for transition in spn.get_transitions():
