@@ -1,7 +1,7 @@
 digraph {
 	node [forcelabels=true]
-	Queue [label=8 fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Queue]
-	Server [label=<&#9679;> fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Server]
+	Queue [label=6 fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Queue]
+	Server [label="" fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Server]
 	TArrive [label="" color=black fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel=TArrive]
 	TArrive -> Queue
 	TApproach [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel=TApproach]

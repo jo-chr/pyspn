@@ -30,7 +30,7 @@ spn.add_input_arc(p2,t3)
 spn.add_inhibitor_arc(t2,p2)
 
 
-simulate(spn, max_time = 10, verbosity = 0, protocol = True)
+#simulate(spn, max_time = 10, verbosity = 0, protocol = True)
 
 #print_petri_net(spn)
-draw_spn(spn)
+#draw_spn(spn)
