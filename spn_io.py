@@ -54,9 +54,9 @@ def print_petri_net(spn: SPN):
 
 def print_marking(spn: SPN, simulation_time):
     print("\n")
-    print("Marking at time " + str(simulation_time))
+    print("Marking at time {}".format(simulation_time))
     for place in spn.get_places():
-        print("Place " + place.label + ", #tokens: " + str(place.n_tokens))
+        print("Place {}, #tokens: {}".format(place.label,place.n_tokens))
 
 def print_state(spn: SPN, simulation_time):
     print("\n")

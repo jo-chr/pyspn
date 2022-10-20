@@ -10,6 +10,7 @@ def reset_state(spn: SPN):
     None
 
 def set_firing_time(transition: Transition):
+    """Sets the firing time of a transition based on the transition type and distribution"""
     if transition.t_type == "I":
         transition.firing_time = 0.0
         transition.enabled_at = SIMULATION_TIME
@@ -19,6 +20,7 @@ def set_firing_time(transition: Transition):
         transition.firing_time = get_delay("DET", delay= transition.dist_par1)
 
 def is_enabled(transition: Transition):
+    """Checks wheter a transition is currently enabled"""
     input_arcs = transition.input_arcs
     inhibitor_arcs = transition.inhibitor_arcs
     
@@ -38,9 +40,9 @@ def is_enabled(transition: Transition):
     return True
 
 def update_enabled_flag(spn: SPN):
-
+    """Updates the enabled flag for all transitions in a SPN"""
     transition: Transition
-    for transition in spn.get_transitions():
+    for transition in spn.transitions:
         if is_enabled(transition) == True:
             transition.enabled = True
             transition.enabled_at = SIMULATION_TIME
@@ -49,7 +51,7 @@ def update_enabled_flag(spn: SPN):
             continue
 
 def fire_transition(transition: Transition):
-    
+    "Fires a transition"
     output_arcs = transition.output_arcs
     input_arcs = transition.input_arcs
 
@@ -69,7 +71,7 @@ def fire_transition(transition: Transition):
     transition.reset()
 
 def find_next_firing(spn: SPN):
-    
+    "Finds the next transition that need to be fired based on min(firing times)"
     firing_times = {}
     transition: Transition
     for transition in spn.get_transitions():
@@ -101,14 +103,18 @@ def process_next_event(spn: SPN):
 def simulate(spn: SPN, max_time: int, verbosity: int, protocol: bool):
     
     global SIMULATION_TIME
-    
-    print("Starting simulation...")
-    print("Simulation time limit = " + str(max_time))
+
+    if verbosity > 0:
+        print("Starting simulation...")
+        print("Simulation time limit = {}".format(max_time))
     
     reset_state(spn)
-    print_marking(spn,SIMULATION_TIME)
+
+    if verbosity > 1:
+        print_marking(spn,SIMULATION_TIME)
     
     update_enabled_flag(spn)
+    
     print_state(spn,SIMULATION_TIME)
     while SIMULATION_TIME < max_time:
         process_next_event(spn)

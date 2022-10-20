@@ -1,0 +1,13 @@
+digraph {
+	node [forcelabels=true]
+	Queue [label=31 fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Queue]
+	Server [label=<&#9679;> fixedsize=true height=0.6 shape=circle width=0.6 xlabel=Server]
+	TArrive [label="" color=black fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel=TArrive]
+	TArrive -> Queue
+	TApproach [label="" color=black fixedsize=true height=0.2 shape=rectangle style=filled width=0.6 xlabel=TApproach]
+	Queue -> TApproach
+	TApproach -> Server
+	Server -> TApproach [arrowhead=dot]
+	TService [label="" color=black fixedsize=true height=0.2 shape=rectangle width=0.6 xlabel=TService]
+	Server -> TService
+}
