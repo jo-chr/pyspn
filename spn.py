@@ -112,30 +112,3 @@ class OutputArc(object):
         self.to_place = None
         self.from_transition = None
         self.multiplicity = 0
-
-
-        
-
-
-def print_input_arc(input_arc: InputArc):
-    place = input_arc.from_place
-    transition = input_arc.to_transition
-    print("Input arc from place " + place.label + " to transition " + transition.label)
-
-def print_output_arc(output_arc: OutputArc):
-    transition = output_arc.from_transition
-    place = output_arc.to_place
-    print("Output arc from transition " + transition.label + " to place " + place.label)
-
-def print_inhibitor_arc(inhibitor_arc: InhibitorArc):
-    place = inhibitor_arc.from_place
-    transition = inhibitor_arc.to_transition    
-    print("Inhibitor arc from place " + place.label + " to transition " + transition.label)
-
-
-        
-
-
-
-
-

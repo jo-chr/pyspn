@@ -1,7 +1,55 @@
-from spn import SPN, Place, Transition
+from spn import *
+
+def print_place(place: Place):
+    print("Place {}\n".format(place.label))
+    print(" NTokens: {}\n".format(place.n_tokens))
+
+def print_transition(transition: Transition):
+    print("Transition {}\n".format(transition.label))
+    if transition.t_type == "I":
+        print(" Immediate transition\n")
+        #print(" P:  {}\n".format(transition.dist_par1))
+    elif transition.distribution == "DET":
+        print(" Distribution: Deterministic")
+        print(" delay:  {}\n".format(transition.dist_par1))
+    elif transition.distribution == "EXP":
+        print(" Distribution: Exponential")
+        print(" lambda: {}\n".format(transition.dist_par1))
+    elif transition.distribution == "NORM":
+        print(" Distribtution: Normal/Uniform")
+        print(" a:  {}".format(transition.dist_par1))
+        print(" b:  {}\n".format(transition.dist_par2))
+
+def print_input_arc(input_arc: InputArc):
+    place = input_arc.from_place
+    transition = input_arc.to_transition
+    print(" Input arc from place {} to transition {}".format(place.label,transition.label))
+
+def print_output_arc(output_arc: OutputArc):
+    transition = output_arc.from_transition
+    place = output_arc.to_place
+    print(" Output arc from transition {} to place {}".format(transition.label,place.label))
+
+def print_inhibitor_arc(inhibitor_arc: InhibitorArc):
+    place = inhibitor_arc.from_place
+    transition = inhibitor_arc.to_transition    
+    print(" Inhibitor arc from place {} to transition {}".format(place.label,transition.label))
 
 def print_petri_net(spn: SPN):
-    return None
+    
+    for place in spn.places:
+        print_place(place)
+
+    transition:Transition
+    for transition in spn.transitions:
+        print_transition(transition)
+        for input_arc in transition.input_arcs:
+            print_input_arc(input_arc)
+        for output_arc in transition.output_arcs:
+            print_output_arc(output_arc)
+        for inhibitor_arc in transition.inhibitor_arcs:
+            print_inhibitor_arc(inhibitor_arc)
+        print("\n")
 
 
 def print_marking(spn: SPN, simulation_time):

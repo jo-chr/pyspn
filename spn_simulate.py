@@ -1,3 +1,5 @@
+import random
+
 from spn import *
 from spn_io import *
 from RNGFactory import *
@@ -13,6 +15,8 @@ def set_firing_time(transition: Transition):
         transition.enabled_at = SIMULATION_TIME
     elif transition.t_type == "T" and transition.distribution == "EXP":
         transition.firing_time = get_delay("EXP", lmbda = transition.dist_par1)
+    elif transition.t_type == "T" and transition.distribution == "DET":
+        transition.firing_time = get_delay("DET", delay= transition.dist_par1)
 
 def is_enabled(transition: Transition):
     input_arcs = transition.input_arcs
@@ -73,7 +77,7 @@ def find_next_firing(spn: SPN):
             continue
         else:
             firing_times[transition] = transition.firing_time
-    return next(t for t in firing_times if firing_times[t] == min(firing_times.values()))           
+    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])   #random choice in case there are two ore more transitions fulfilling min() condition        
 
 
 def process_next_event(spn: SPN):
@@ -104,9 +108,6 @@ def simulate(spn: SPN, max_time: int, verbosity: int, protocol: bool):
     reset_state(spn)
     print_marking(spn,SIMULATION_TIME)
     
-
-    
-
     update_enabled_flag(spn)
     print_state(spn,SIMULATION_TIME)
     while SIMULATION_TIME < max_time:
@@ -116,9 +117,3 @@ def simulate(spn: SPN, max_time: int, verbosity: int, protocol: bool):
     print_state(spn,SIMULATION_TIME)
 
     print_statistics(spn,SIMULATION_TIME)
-
-
-    #print(is_enabled(spn.get_transitions()[1]))
-    #print(spn.get_transitions()[0].firing_time)
-    #set_firing_time(spn.get_transitions()[0])
-    #print(spn.get_transitions()[0].firing_time)
