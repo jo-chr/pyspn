@@ -1,4 +1,4 @@
-from spn import *
+from .spn import *
 
 def print_place(place: Place):
     print("Place {}\n".format(place.label))

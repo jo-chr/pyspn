@@ -1,8 +1,8 @@
 import random
 
-from spn import *
-from spn_io import *
-from RNGFactory import *
+from .spn import *
+from .spn_io import *
+from .RNGFactory import *
 
 SIMULATION_TIME = 0
 

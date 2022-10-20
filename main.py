@@ -1,8 +1,7 @@
-from matplotlib.pyplot import draw
-from spn import *
-from spn_simulate import simulate
-from spn_io import print_petri_net
-from spn_visualization import *
+from spn_simulator.spn import *
+from spn_simulator.spn_simulate import simulate
+from spn_simulator.spn_io import print_petri_net
+from spn_simulator.spn_visualization import *
 
 spn = SPN()
 

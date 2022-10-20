@@ -1,6 +1,6 @@
 from graphviz import Digraph
 
-from spn import *
+from .spn import *
 
 def draw_spn(spn: SPN, file="spn_default", show=True):
 
@@ -46,6 +46,6 @@ def draw_spn(spn: SPN, file="spn_default", show=True):
         for inhibitor_arc in transition.inhibitor_arcs:
             spn_graph.edge(inhibitor_arc.from_place.label, inhibitor_arc.to_transition.label, arrowhead="dot")
 
-    spn_graph.render('{}.gv'.format(file), view=show)
+    spn_graph.render('output/graphs/{}.gv'.format(file), view=show)
 
     return spn_graph
