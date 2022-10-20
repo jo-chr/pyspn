@@ -5,8 +5,13 @@ from .spn_io import *
 from .RNGFactory import *
 
 SIMULATION_TIME = 0
+VERBOSITY = 0
+PROTOCOL = False
 
 def reset_state(spn: SPN):
+    None
+
+def complete_statistics():
     None
 
 def set_firing_time(transition: Transition):
@@ -27,7 +32,7 @@ def is_enabled(transition: Transition):
     arc: InhibitorArc
     for arc in inhibitor_arcs:
         if arc.from_place.n_tokens > 0:
-            print("inhibitor arc is blocking transition: " + transition.label)
+            #print("inhibitor arc is blocking transition: " + transition.label)
             return False
 
     arc: InputArc
@@ -35,7 +40,7 @@ def is_enabled(transition: Transition):
         if arc.from_place.n_tokens > 0:
             continue
         else:
-            print("not enough tokens to enable transition: " + transition.label)
+            #print("not enough tokens to enable transition: " + transition.label)
             return False
     return True
 
@@ -60,12 +65,16 @@ def fire_transition(transition: Transition):
         place = arc.to_place
         place.add_n_tokens(1)
         place.time_changed = SIMULATION_TIME
+        if PROTOCOL == True:
+            write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
     
     arc: InputArc
     for arc in input_arcs:
         place = arc.from_place
         place.remove_n_tokens(1)
         place.time_changed = SIMULATION_TIME
+        if PROTOCOL == True:
+            write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
 
     transition.n_times_fired += 1
     transition.reset()
@@ -93,33 +102,44 @@ def process_next_event(spn: SPN):
 
     fire_transition(next_transition)
 
-    print("\n")
-    print("Transition "+ next_transition.label + "fires at time " + str(SIMULATION_TIME))
+    if VERBOSITY > 1:
+        print("Transition {} fires at time ".format(next_transition.label, SIMULATION_TIME))
     
-    print_marking(spn,SIMULATION_TIME)
+    if VERBOSITY > 2:
+        print_marking(spn,SIMULATION_TIME)
 
     update_enabled_flag(spn)
 
-def simulate(spn: SPN, max_time: int, verbosity: int, protocol: bool):
+def simulate(spn: SPN, max_time = 10, verbosity = 2, protocol = True):
     
-    global SIMULATION_TIME
+    global SIMULATION_TIME, VERBOSITY, PROTOCOL
 
-    if verbosity > 0:
+    VERBOSITY = verbosity
+    PROTOCOL = protocol
+
+    if VERBOSITY > 0:
         print("Starting simulation...")
         print("Simulation time limit = {}".format(max_time))
     
     reset_state(spn)
 
-    if verbosity > 1:
+    if VERBOSITY > 1:
         print_marking(spn,SIMULATION_TIME)
     
     update_enabled_flag(spn)
     
-    print_state(spn,SIMULATION_TIME)
+    if VERBOSITY > 1:
+        print_state(spn,SIMULATION_TIME)
+    
     while SIMULATION_TIME < max_time:
         process_next_event(spn)
+        if verbosity > 2:
+            print_state(spn,SIMULATION_TIME)
 
-    print_marking(spn,SIMULATION_TIME)
-    print_state(spn,SIMULATION_TIME)
+    if VERBOSITY > 0:
+        print("\nTime: {}. Simulation terminated.\n".format(SIMULATION_TIME))
 
-    print_statistics(spn,SIMULATION_TIME)
+    complete_statistics()
+
+    if VERBOSITY > 0:
+        print_statistics(spn,SIMULATION_TIME)
