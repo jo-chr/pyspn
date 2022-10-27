@@ -19,10 +19,16 @@ def set_firing_time(transition: Transition):
     if transition.t_type == "I":
         transition.firing_time = 0.0
         transition.enabled_at = SIMULATION_TIME
+    elif transition.t_type == "T" and transition.distribution == "DET":
+        transition.firing_time = transition.dist_par1
+        transition.enabled_at = SIMULATION_TIME
     elif transition.t_type == "T" and transition.distribution == "EXP":
         transition.firing_time = get_delay("EXP", lmbda = transition.dist_par1)
-    elif transition.t_type == "T" and transition.distribution == "DET":
-        transition.firing_time = get_delay("DET", delay= transition.dist_par1)
+        transition.enabled_at = SIMULATION_TIME
+    elif transition.t_type == "T" and transition.distribution == "NORM":
+        transition.firing_time = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
+        transition.enabled_at = SIMULATION_TIME
+    else: raise Exception("Distribution undefined for transition {}".format(transition))
 
 def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
@@ -50,7 +56,7 @@ def update_enabled_flag(spn: SPN):
     for transition in spn.transitions:
         if is_enabled(transition) == True:
             transition.enabled = True
-            transition.enabled_at = SIMULATION_TIME
+            #error here: Overwrites firing time from previous iteration. Need to add logic that if transition is enabled and firing time has already been determined do net set new firing time
             set_firing_time(transition)
         else:
             continue
@@ -60,18 +66,19 @@ def fire_transition(transition: Transition):
     output_arcs = transition.output_arcs
     input_arcs = transition.input_arcs
 
-    arc: OutputArc
-    for arc in output_arcs:
-        place = arc.to_place
-        place.add_n_tokens(1)
+    oarc: OutputArc
+    place: Place
+    for oarc in output_arcs:
+        place = oarc.to_place
+        place.add_n_tokens(1)            #needs to be changed based on multiplicity of arc
         place.time_changed = SIMULATION_TIME
         if PROTOCOL == True:
             write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
     
-    arc: InputArc
-    for arc in input_arcs:
-        place = arc.from_place
-        place.remove_n_tokens(1)
+    iarc: InputArc
+    for iarc in input_arcs:
+        place = iarc.from_place
+        place.remove_n_tokens(1)        #needs to be changed based on multiplicity of arc
         place.time_changed = SIMULATION_TIME
         if PROTOCOL == True:
             write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
@@ -83,7 +90,7 @@ def find_next_firing(spn: SPN):
     """Finds the next transition that need to be fired based on min(firing times)"""
     firing_times = {}
     transition: Transition
-    for transition in spn.get_transitions():
+    for transition in spn.transitions:
         if transition.enabled == False:
             continue
         else:
@@ -103,7 +110,7 @@ def process_next_event(spn: SPN):
     fire_transition(next_transition)
 
     if VERBOSITY > 1:
-        print("Transition {} fires at time ".format(next_transition.label, SIMULATION_TIME))
+        print("\nTransition {} fires at time {}".format(next_transition.label, SIMULATION_TIME))
     
     if VERBOSITY > 2:
         print_marking(spn,SIMULATION_TIME)
