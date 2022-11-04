@@ -56,8 +56,10 @@ def update_enabled_flag(spn: SPN):
     for transition in spn.transitions:
         if is_enabled(transition) == True:
             transition.enabled = True
-            #error here: Overwrites firing time from previous iteration. Need to add logic that if transition is enabled and firing time has already been determined do net set new firing time
-            set_firing_time(transition)
+            if transition.firing_time == 0:
+                set_firing_time(transition)
+            else:
+                continue
         else:
             continue
 
@@ -110,7 +112,7 @@ def process_next_event(spn: SPN):
     fire_transition(next_transition)
 
     if VERBOSITY > 1:
-        print("\nTransition {} fires at time {}".format(next_transition.label, SIMULATION_TIME))
+        print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
     
     if VERBOSITY > 2:
         print_marking(spn,SIMULATION_TIME)
