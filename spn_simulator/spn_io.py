@@ -56,28 +56,29 @@ def print_petri_net(spn: SPN):
 
 def print_marking(spn: SPN, simulation_time):
     print("\n")
-    print("Marking at time {}".format(simulation_time))
+    print("Marking at time {}".format(round(simulation_time,2)))
     for place in spn.places:
         print("Place {}, #tokens: {}".format(place.label,place.n_tokens))
 
 def print_state(spn: SPN, simulation_time):
     print("\n")
-    print("State at time " + str(simulation_time))
+    print("State at time " + str(round(simulation_time,2)))
     place:Place
     for place in spn.places:
         print("Place " + place.label)
         print(" NTokens: " + str(place.n_tokens))
-        print(" Last changed: " + str(place.time_changed))
+        print(" Last changed: " + str(round(place.time_changed,2)))
         print(" Total tokens: " + str(place.total_tokens))
-        print(" Time not empty: " + str(place.time_non_empty))
+        print(" Time not empty: " + str(round(place.time_non_empty,2)))
     
     transition:Transition
     for transition in spn.transitions:
         print("Transtion " + transition.label)
         if transition.enabled == True:
             print(" Enabled: True")
-            print("     Enabled at: " + str(transition.enabled_at))
-            print("     Firing time: " + str(transition.firing_time))
+            print("     Enabled at: " + str(round(transition.enabled_at,2)))
+            print("     Firing delay: " + str(round(transition.firing_time,2)))
+            print("     (Potential) firing time: " + str(round(simulation_time + transition.firing_time,2)))
         else:
             print(" Enabled: False")
 
