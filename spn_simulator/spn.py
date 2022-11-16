@@ -6,6 +6,14 @@ class SPN(object):
         self.places = []
         self.transitions = []
 
+    def get_place_by_label(self, label: str):
+        try:
+            place: Place
+            for place in self.places:
+                if place.label == label:
+                    return place
+        except: print("No place found with specified label")
+        
     def add_place(self, place: Place):            
         self.places.append(place)
 
@@ -18,6 +26,7 @@ class SPN(object):
         arc.to_transition = transition
         arc.multiplicity = multiplicity
         transition.input_arcs.append(arc)
+        place.input_arcs.append(arc)
 
     def add_inhibitor_arc(self, transition: Transition, place: Place, multiplicity = 1):
         arc = InhibitorArc()
@@ -25,6 +34,7 @@ class SPN(object):
         arc.from_place = place
         arc.multiplicity = multiplicity
         transition.inhibitor_arcs.append(arc)
+        place.inhibitor_arcs.append(arc)
 
     def add_output_arc(self, transition: Transition, place: Place, multiplicity = 1):
         arc = OutputArc()
@@ -32,6 +42,7 @@ class SPN(object):
         arc.to_place = place
         arc.multiplicity = multiplicity
         transition.output_arcs.append(arc)
+        place.output_arcs.append(arc)
         
 
 class Place():
@@ -43,6 +54,10 @@ class Place():
         self.time_changed = 0
         self.total_tokens = 0
         self.time_non_empty = 0
+
+        self.input_arcs = []
+        self.output_arcs = []
+        self.inhibitor_arcs = []
     
     def add_n_tokens(self, n_tokens: int):
         self.n_tokens += n_tokens
