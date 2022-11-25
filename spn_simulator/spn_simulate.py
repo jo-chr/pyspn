@@ -1,6 +1,4 @@
 import random
-import os
-import sys
 
 from .spn import *
 from .spn_io import *
@@ -17,27 +15,20 @@ def complete_statistics():
     None
 
 def set_firing_time(transition: Transition):
-
-    ##maybe add firing delay and firing time here! Find next transition to fire based on lower firing time
-
     """Sets the firing time of a transition based on the transition type and distribution"""
+    transition.enabled_at = SIMULATION_TIME
+
     if transition.t_type == "I":
-        transition.enabled_at = SIMULATION_TIME
         transition.firing_delay = 0.0
-        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "DET":
-        transition.enabled_at = SIMULATION_TIME 
         transition.firing_delay = transition.dist_par1       
-        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "EXP":
-        transition.enabled_at = SIMULATION_TIME
         transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
-        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "NORM":
-        transition.enabled_at = SIMULATION_TIME
         transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
-        transition.firing_time = transition.enabled_at +  transition.firing_delay
     else: raise Exception("Distribution undefined for transition {}".format(transition))
+
+    transition.firing_time = transition.enabled_at +  transition.firing_delay
 
 def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
