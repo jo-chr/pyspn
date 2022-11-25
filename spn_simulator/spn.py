@@ -88,6 +88,7 @@ class Transition(object):
 
         self.enabled = False
         self.enabled_at = 0
+        self.firing_delay = 0
         self.firing_time = 0
 
         self.time_enabled = 0
@@ -111,8 +112,9 @@ class Transition(object):
 
     def reset(self):
         self.enabled = False
-        self.firing_time = 0
         self.enabled_at = 0
+        self.firing_delay = 0
+        self.firing_time = 0
 
 
 class InputArc(object):
