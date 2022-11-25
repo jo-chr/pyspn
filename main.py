@@ -9,12 +9,12 @@ p1 = Place("Queue",0)
 p2 = Place("Server",0)
 
 t1 = Transition("TArrive","T")
-t1.set_distribution("EXP", 0.5, 0.0)
+t1.set_distribution("EXP", 1.0, 0.0)
 #t1.set_distribution("DET",1,0)
 t2 = Transition("TApproach","I")
 t2.set_weight(1)
 t3 = Transition("TService","T")
-t3.set_distribution("EXP", 0.51, 0.0)
+t3.set_distribution("EXP", 0.9, 0.0)
 #t3.set_distribution("DET",1,0)
 
 spn.add_place(p1)
@@ -31,7 +31,7 @@ spn.add_input_arc(p2,t3)
 spn.add_inhibitor_arc(t2,p2)
 
 
-simulate(spn, max_time = 3, verbosity = 3, protocol = True)
+simulate(spn, max_time = 100, verbosity = 3, protocol = True)
 
 #print_petri_net(spn)
 draw_spn(spn, show=False)
