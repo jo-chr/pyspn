@@ -1,4 +1,6 @@
 import random
+import os
+import sys
 
 from .spn import *
 from .spn_io import *
@@ -15,19 +17,26 @@ def complete_statistics():
     None
 
 def set_firing_time(transition: Transition):
+
+    ##maybe add firing delay and firing time here! Find next transition to fire based on lower firing time
+
     """Sets the firing time of a transition based on the transition type and distribution"""
     if transition.t_type == "I":
-        transition.firing_time = 0.0
         transition.enabled_at = SIMULATION_TIME
+        transition.firing_delay = 0.0
+        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "DET":
-        transition.firing_time = transition.dist_par1
-        transition.enabled_at = SIMULATION_TIME
+        transition.enabled_at = SIMULATION_TIME 
+        transition.firing_delay = transition.dist_par1       
+        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "EXP":
-        transition.firing_time = get_delay("EXP", lmbda = transition.dist_par1)
         transition.enabled_at = SIMULATION_TIME
+        transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
+        transition.firing_time = transition.enabled_at + transition.firing_delay
     elif transition.t_type == "T" and transition.distribution == "NORM":
-        transition.firing_time = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
         transition.enabled_at = SIMULATION_TIME
+        transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
+        transition.firing_time = transition.enabled_at +  transition.firing_delay
     else: raise Exception("Distribution undefined for transition {}".format(transition))
 
 def is_enabled(transition: Transition):
@@ -97,8 +106,7 @@ def find_next_firing(spn: SPN):
             continue
         else:
             firing_times[transition] = transition.firing_time
-    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])   #random choice in case there are two ore more transitions fulfilling min() condition        
-
+    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
 
 def process_next_event(spn: SPN):
 
@@ -107,7 +115,7 @@ def process_next_event(spn: SPN):
     next_transition: Transition
     next_transition = find_next_firing(spn)
     
-    SIMULATION_TIME = SIMULATION_TIME + next_transition.firing_time
+    SIMULATION_TIME = next_transition.firing_time
 
     fire_transition(next_transition)
 
@@ -125,6 +133,13 @@ def simulate(spn: SPN, max_time = 10, verbosity = 2, protocol = True):
 
     VERBOSITY = verbosity
     PROTOCOL = protocol
+
+    #clear protocol
+    if protocol == True:
+        with open("output/protocol/protocol.csv", "w", newline="") as protocol:
+            writer = csv.writer(protocol)
+            writer.writerow(["Place","Time","Marking"])
+
 
     if VERBOSITY > 0:
         print("Starting simulation...")
