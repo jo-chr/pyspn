@@ -77,8 +77,8 @@ def print_state(spn: SPN, simulation_time):
         if transition.enabled == True:
             print(" Enabled: True")
             print("     Enabled at: " + str(round(transition.enabled_at,2)))
-            print("     Firing delay: " + str(round(transition.firing_time,2)))
-            print("     (Potential) firing time: " + str(round(simulation_time + transition.firing_time,2)))
+            print("     Firing delay: " + str(round(transition.firing_delay,2)))
+            print("     Firing time: " + str(round(transition.firing_time,2)))
         else:
             print(" Enabled: False")
 
@@ -104,5 +104,5 @@ def write_to_protocol(place, simulation_time, n_tokens):
     #TODO: Update this; maybe write to 2D list and then add to csv at the end
     with open("output/protocol/protocol.csv", "a", newline="") as protocol:
         writer = csv.writer(protocol)
-        writer.writerow([place,str(simulation_time),str(n_tokens)])
+        writer.writerow([place,str(round(simulation_time,2)),str(n_tokens)])
 
