@@ -61,7 +61,9 @@ def update_enabled_flag(spn: SPN):
             else:
                 continue
         else:
-            continue
+            transition.enabled = False
+            if transition.t_type == "I":
+                transition.reset()
 
 def fire_transition(transition: Transition):
     """Fires a transition"""
@@ -97,7 +99,16 @@ def find_next_firing(spn: SPN):
             continue
         else:
             firing_times[transition] = transition.firing_time
-    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
+
+    transition_to_fire = random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
+    #for transition in firing_times:
+    #    if transition.t_type == "I":
+
+    #for transition in firing_times:
+    #    if transition.t_type == "I" and transition != transition_to_fire:
+    #        transition.firing_time == 0
+
+    return transition_to_fire
 
 def process_next_event(spn: SPN):
 
