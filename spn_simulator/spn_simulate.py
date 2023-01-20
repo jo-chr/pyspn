@@ -92,6 +92,34 @@ def fire_transition(transition: Transition):
 
 def find_next_firing(spn: SPN):
     """Finds the next transition that need to be fired based on min(firing times)"""
+    transition: Transition
+
+    total_prob = 0
+    inc_prob = 0
+    for transition in spn.transitions:
+        if transition.enabled == True and transition.t_type == "I":
+            total_prob = total_prob + transition.weight
+    
+    if total_prob > 0:
+        ran = random.uniform(0,total_prob)
+        for transition in spn.transitions:
+            if transition.enabled == True and transition.t_type == "I":
+                inc_prob = inc_prob + transition.weight
+                if inc_prob > ran:
+                    return transition
+
+    firing_times = {}
+    for transition in spn.transitions:
+        if transition.enabled == True:
+            firing_times[transition] = transition.firing_time
+        else:
+            continue
+        
+    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
+
+'''
+def find_next_firing(spn: SPN):
+    """Finds the next transition that need to be fired based on min(firing times)"""
     firing_times = {}
     transition: Transition
     for transition in spn.transitions:
@@ -100,15 +128,26 @@ def find_next_firing(spn: SPN):
         else:
             firing_times[transition] = transition.firing_time
 
+    #remove timed transitions from firing time list if there is at least one immediate transition. Keep all immediate transitions.
+    for transition in firing_times:
+        if transition.t_type == "I":
+            firing_times = {k:v for (k,v) in firing_times.items() if "I" in k.t_type}
+            #find and filter out transitions with same input place
+            
+            break
+        else: continue
+
     transition_to_fire = random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
-    #for transition in firing_times:
+
+    
+    #check for concurrency of immediate transitions
+    #+for transition in firing_times:
     #    if transition.t_type == "I":
 
-    #for transition in firing_times:
-    #    if transition.t_type == "I" and transition != transition_to_fire:
-    #        transition.firing_time == 0
 
-    return transition_to_fire
+
+
+    return transition_to_fire'''
 
 def process_next_event(spn: SPN):
 
