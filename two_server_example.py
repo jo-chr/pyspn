@@ -10,7 +10,7 @@ p2 = Place("Server1",0)
 p3 = Place("Server2",0)
 
 t1 = Transition("TArrive","T")
-t1.set_distribution("EXP", 1.0, 0.0)
+#t1.set_distribution("EXP", 1.0, 0.0)
 t1.set_distribution("DET",1,0)
 t2 = Transition("TApproach_Server1","I")
 t2.set_weight(0.5)
