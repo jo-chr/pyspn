@@ -98,7 +98,7 @@ class Transition(object):
         self.output_arcs = []
         self.inhibitor_arcs = []
 
-    def set_distribution(self, distribution: str, parameter1: float, parameter2: float):
+    def set_distribution(self, distribution: str, parameter1: float = 0, parameter2: float = 0):
         if self.t_type == "T":
             self.distribution = distribution
             self.dist_par1 = parameter1
