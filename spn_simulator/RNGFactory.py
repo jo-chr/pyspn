@@ -23,7 +23,3 @@ def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf
 
     if distribution == "SCIPY_HIST":
         return rv_hist.rvs(size = 1)[0]*24 #days to hours
-
-        
-    
-    
