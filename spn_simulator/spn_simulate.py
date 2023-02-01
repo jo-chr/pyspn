@@ -6,6 +6,7 @@ from .spn_io import *
 from .RNGFactory import *
 
 SIMULATION_TIME = 0
+SIMULATION_TIME_UNIT = None
 VERBOSITY = 0
 PROTOCOL = False
 
@@ -22,7 +23,7 @@ def set_firing_time(transition: Transition):
     if transition.t_type == "I":
         transition.firing_delay = 0.0
     elif transition.t_type == "T" and transition.distribution == "DET":
-        transition.firing_delay = transition.dist_par1       
+        transition.firing_delay = get_delay("DET", delay=transition.dist_par1)   
     elif transition.t_type == "T" and transition.distribution == "EXP":
         transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
     elif transition.t_type == "T" and transition.distribution == "NORM":
@@ -33,7 +34,16 @@ def set_firing_time(transition: Transition):
         transition.firing_delay = get_delay("SCIPY_HIST", rv_hist = transition.dist_par1)
     else: raise Exception("Distribution undefined for transition {}".format(transition))
 
+    if transition.t_type == "T":
+        transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
+
     transition.firing_time = transition.enabled_at +  transition.firing_delay
+
+def convert_delay(delay, time_unit = None, simulation_time_unit = None):
+    if time_unit == simulation_time_unit:
+        return delay
+    elif time_unit == "d" and simulation_time_unit == "h":
+         return delay * 24
 
 def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
@@ -173,10 +183,11 @@ def process_next_event(spn: SPN):
 
     update_enabled_flag(spn)
 
-def simulate(spn: SPN, max_time = 10, verbosity = 2, protocol = True):
+def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol = True):
     
-    global SIMULATION_TIME, VERBOSITY, PROTOCOL
+    global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
 
+    SIMULATION_TIME_UNIT = time_unit
     VERBOSITY = verbosity
     PROTOCOL = protocol
 
