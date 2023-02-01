@@ -164,15 +164,18 @@ def find_next_firing(spn: SPN):
 
     return transition_to_fire'''
 
-def process_next_event(spn: SPN):
+def process_next_event(spn: SPN, max_time):
 
     global SIMULATION_TIME
 
     next_transition: Transition
     next_transition = find_next_firing(spn)
-    
-    SIMULATION_TIME = next_transition.firing_time
 
+    if next_transition.firing_time > max_time:
+        SIMULATION_TIME = max_time
+        return None                             #might need some refactoring
+    else: SIMULATION_TIME = next_transition.firing_time 
+    
     fire_transition(next_transition)
 
     if VERBOSITY > 1:
@@ -213,7 +216,7 @@ def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol =
         print_state(spn,SIMULATION_TIME)
     
     while SIMULATION_TIME < max_time:
-        process_next_event(spn)
+        process_next_event(spn, max_time)
         if verbosity > 2:
             print_state(spn,SIMULATION_TIME)
 
