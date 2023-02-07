@@ -10,9 +10,6 @@ SIMULATION_TIME_UNIT = None
 VERBOSITY = 0
 PROTOCOL = False
 
-random.seed()
-np.random.seed()
-
 def reset_state(spn: SPN):
     None
 
@@ -134,38 +131,6 @@ def find_next_firing(spn: SPN):
             continue
         
     return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
-
-'''
-def find_next_firing(spn: SPN):
-    """Finds the next transition that need to be fired based on min(firing times)"""
-    firing_times = {}
-    transition: Transition
-    for transition in spn.transitions:
-        if transition.enabled == False:
-            continue
-        else:
-            firing_times[transition] = transition.firing_time
-
-    #remove timed transitions from firing time list if there is at least one immediate transition. Keep all immediate transitions.
-    for transition in firing_times:
-        if transition.t_type == "I":
-            firing_times = {k:v for (k,v) in firing_times.items() if "I" in k.t_type}
-            #find and filter out transitions with same input place
-            
-            break
-        else: continue
-
-    transition_to_fire = random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
-
-    
-    #check for concurrency of immediate transitions
-    #+for transition in firing_times:
-    #    if transition.t_type == "I":
-
-
-
-
-    return transition_to_fire'''
 
 def process_next_event(spn: SPN, max_time):
 
