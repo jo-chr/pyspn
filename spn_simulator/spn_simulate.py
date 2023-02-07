@@ -10,6 +10,9 @@ SIMULATION_TIME_UNIT = None
 VERBOSITY = 0
 PROTOCOL = False
 
+random.seed()
+np.random.seed()
+
 def reset_state(spn: SPN):
     None
 
@@ -190,6 +193,7 @@ def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol =
     
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
 
+    SIMULATION_TIME = 0
     SIMULATION_TIME_UNIT = time_unit
     VERBOSITY = verbosity
     PROTOCOL = protocol
