@@ -3,10 +3,8 @@ import random
 from statsmodels.distributions.empirical_distribution import ECDF
 from scipy.stats import rv_histogram
 
-#np.random.seed(1337)
-
 def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf = ECDF, rv_hist = rv_histogram):
-    
+
     if distribution == "DET":
         return delay
     
