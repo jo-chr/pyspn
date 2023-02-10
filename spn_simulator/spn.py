@@ -13,6 +13,14 @@ class SPN(object):
                 if place.label == label:
                     return place
         except: print("No place found with specified label")
+
+    def get_transition_by_label(self, label: str):
+        try:
+            transition: Transition
+            for transition in self.transitions:
+                if transition.label == label:
+                    return transition
+        except: print("No transition found with specified label")
         
     def add_place(self, place: Place):            
         self.places.append(place)
