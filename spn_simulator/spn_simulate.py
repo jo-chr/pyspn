@@ -9,6 +9,7 @@ SIMULATION_TIME = 0
 SIMULATION_TIME_UNIT = None
 VERBOSITY = 0
 PROTOCOL = False
+SCHEDULE_ITERATOR = 0
 
 def reset_state(spn: SPN):
     None
@@ -18,6 +19,8 @@ def complete_statistics():
 
 def set_firing_time(transition: Transition):
     """Sets the firing time of a transition based on the transition type and distribution"""
+    global SCHEDULE_ITERATOR
+
     transition.enabled_at = SIMULATION_TIME
 
     if transition.t_type == "I":
@@ -32,18 +35,21 @@ def set_firing_time(transition: Transition):
         transition.firing_delay = get_delay("ECDF", ecdf = transition.dist_par1)
     elif transition.t_type == "T" and transition.distribution == "SCIPY_HIST":
         transition.firing_delay = get_delay("SCIPY_HIST", rv_hist = transition.dist_par1)
+    elif transition.t_type == "T" and transition.distribution == "SCHEDULE":
+        transition.firing_delay = get_delay("SCHEDULE", schedule = transition.dist_par1, schedule_iterator=SCHEDULE_ITERATOR) 
+        SCHEDULE_ITERATOR += 1
     else: raise Exception("Distribution undefined for transition {}".format(transition))
 
     if transition.t_type == "T":
         transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
 
-    transition.firing_time = transition.enabled_at +  transition.firing_delay
+    transition.firing_time = transition.enabled_at + transition.firing_delay
 
 def convert_delay(delay, time_unit = None, simulation_time_unit = None):
     if time_unit == simulation_time_unit:
         return delay
     elif time_unit == "d" and simulation_time_unit == "h":
-         return delay * 24
+        return delay * 24
 
 def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
@@ -156,12 +162,13 @@ def process_next_event(spn: SPN, max_time):
 
 def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol = True):
     
-    global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
+    global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, SCHEDULE_ITERATOR
 
     SIMULATION_TIME = 0
     SIMULATION_TIME_UNIT = time_unit
     VERBOSITY = verbosity
     PROTOCOL = protocol
+    SCHEDULE_ITERATOR = 0
 
     #clear protocol
     if protocol == True:
