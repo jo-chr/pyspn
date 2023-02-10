@@ -3,7 +3,7 @@ import random
 from statsmodels.distributions.empirical_distribution import ECDF
 from scipy.stats import rv_histogram
 
-def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf = ECDF, rv_hist = rv_histogram):
+def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf = ECDF, rv_hist = rv_histogram, schedule = [], schedule_iterator = 0):
 
     if distribution == "DET":
         return delay
@@ -21,3 +21,10 @@ def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf
 
     if distribution == "SCIPY_HIST":
         return rv_hist.rvs(size = 1)[0]*24 #days to hours
+
+    if distribution == "SCHEDULE":
+        try:
+            delay = schedule[schedule_iterator]
+            return delay
+        except: return np.mean(schedule) ## should restart schedule instead!
+        
