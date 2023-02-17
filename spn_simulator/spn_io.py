@@ -96,10 +96,11 @@ def print_statistics(spn: SPN, simulation_time):
     place:Place
     for place in spn.places:
         print("Place {} :\n".format(place.label))
-        print(" P(Not Empty):        {}".format(place.time_non_empty/simulation_time))
+        #print(" P(Not Empty):        {}".format(place.time_non_empty/simulation_time))
         #print(" Mean #tokens:        {}".format(place.total_tokens/simulation_time))
         print(" Max #tokens:         {}".format(place.max_tokens))
-        print(" Curr #tokens:        {}\n".format(place.n_tokens))    
+        print(" Curr #tokens:        {}".format(place.n_tokens))    
+        print(" Time non empty:      {}\n".format(place.time_non_empty))
 
 def write_to_protocol(place, simulation_time, n_tokens):
     #TODO: Update this; maybe write to 2D list and then add to csv at the end
