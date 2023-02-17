@@ -12,7 +12,12 @@ PROTOCOL = False
 SCHEDULE_ITERATOR = 0
 
 def reset_state(spn: SPN):
-    None
+    for place in spn.places:
+        place:Place
+        place.time_changed = 0
+        place.total_tokens = 0
+        place.time_non_empty = 0
+
 
 def complete_statistics():
     None
@@ -95,16 +100,20 @@ def fire_transition(transition: Transition):
     place: Place
     for oarc in output_arcs:
         place = oarc.to_place
-        place.add_n_tokens(1)            #needs to be changed based on multiplicity of arc
+        if place.n_tokens > 0:
+            place.time_non_empty += SIMULATION_TIME - place.time_changed
         place.time_changed = SIMULATION_TIME
+        place.add_n_tokens(1)            #needs to be changed based on multiplicity of arc
         if PROTOCOL == True:
             write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
     
     iarc: InputArc
     for iarc in input_arcs:
         place = iarc.from_place
-        place.remove_n_tokens(1)        #needs to be changed based on multiplicity of arc
+        if place.n_tokens > 0:
+            place.time_non_empty += SIMULATION_TIME - place.time_changed
         place.time_changed = SIMULATION_TIME
+        place.remove_n_tokens(1)        #needs to be changed based on multiplicity of arc
         if PROTOCOL == True:
             write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
 
