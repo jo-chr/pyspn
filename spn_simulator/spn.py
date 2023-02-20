@@ -90,6 +90,8 @@ class Transition(object):
         elif self.t_type == "I":
             self.weight = 0
         else: raise Exception("Not a valid transition type.")
+
+        self.handicap = 1 #Handicap for experiments with new configurations; Handicap will influence firing times of transition; <1 -> transition fill fire faster; >1 -> transition will fire slower
         
         self.guard_function = None
         self.memory_policy = None
