@@ -53,6 +53,9 @@ def set_firing_time(transition: Transition):
 
     transition.firing_time = transition.enabled_at + transition.firing_delay
 
+def set_reset_time(transition: Transition):
+    transition.reset_time = transition.enabled_at + transition.reset_threshold
+
 def convert_delay(delay, time_unit = None, simulation_time_unit = None):
     if time_unit == simulation_time_unit:
         return delay
@@ -87,12 +90,18 @@ def update_enabled_flag(spn: SPN):
             transition.enabled = True
             if transition.firing_time == 0:
                 set_firing_time(transition)
+            if transition.allow_reset == True and transition.reset_time == 0:
+                set_reset_time(transition)
             else:
                 continue
         else:
             transition.enabled = False
             if transition.t_type == "I":
                 transition.reset()
+
+def reset_transition(transition: Transition):
+    set_firing_time(transition)
+    set_reset_time(transition)
 
 def fire_transition(transition: Transition):
     """Fires a transition"""
@@ -123,6 +132,23 @@ def fire_transition(transition: Transition):
     transition.n_times_fired += 1
     transition.reset()
 
+def find_next_resetting(spn: SPN):
+    """Finds the next transition that need to be resetted based on min(resetting times)"""
+    transition: Transition
+
+    resetting_times = {}
+    for transition in spn.transitions:
+        if transition.enabled == True and transition.allow_reset == True:
+            resetting_times[transition] = transition.reset_time
+        else:
+            continue    
+
+    if not resetting_times:
+        return None
+    else:
+        return random.choice([t for t in resetting_times if resetting_times[t] == min(resetting_times.values())])
+
+
 def find_next_firing(spn: SPN):
     """Finds the next transition that need to be fired based on min(firing times)"""
     transition: Transition
@@ -146,26 +172,44 @@ def find_next_firing(spn: SPN):
         if transition.enabled == True:
             firing_times[transition] = transition.firing_time
         else:
-            continue
-        
+            continue    
     return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
 
 def process_next_event(spn: SPN, max_time):
 
     global SIMULATION_TIME
 
+    next_transition_reset: Transition
     next_transition: Transition
+    next_transition_reset = find_next_resetting(spn)
     next_transition = find_next_firing(spn)
 
-    if next_transition.firing_time > max_time:
-        SIMULATION_TIME = max_time
-        return None                             #might need some refactoring
-    else: SIMULATION_TIME = next_transition.firing_time 
+    if next_transition_reset == None:
+        if next_transition.firing_time > max_time:
+            SIMULATION_TIME = max_time
+            return None     
+        else:
+            SIMULATION_TIME = next_transition.firing_time
+    else:
+        if next_transition.firing_time > max_time or next_transition_reset.reset_time > max_time:
+            SIMULATION_TIME = max_time
+            return None
+        else:
+            SIMULATION_TIME = min([next_transition.firing_time,next_transition_reset.reset_time])
     
-    fire_transition(next_transition)
-
-    if VERBOSITY > 1:
-        print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
+    if next_transition_reset == None:
+        fire_transition(next_transition)
+        if VERBOSITY > 1:
+            print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
+    else:
+        if next_transition.firing_time < next_transition_reset.reset_time:
+            fire_transition(next_transition)
+            if VERBOSITY > 1:
+                print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
+        else:
+            reset_transition(next_transition_reset)
+            if VERBOSITY > 1:
+                print("\nTransition {} resets at time {}".format(next_transition_reset.label, round(SIMULATION_TIME,2)))
     
     if VERBOSITY > 2:
         print_marking(spn,SIMULATION_TIME)
