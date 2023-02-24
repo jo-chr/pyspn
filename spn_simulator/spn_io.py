@@ -80,6 +80,8 @@ def print_state(spn: SPN, simulation_time):
             print("     Enabled at: " + str(round(transition.enabled_at,2)))
             print("     Firing delay: " + str(round(transition.firing_delay,2)))
             print("     Firing time: " + str(round(transition.firing_time,2)))
+            if transition.allow_reset == True:
+                print("     Reset time: " + str(round(transition.reset_time,2)))
         else:
             print(" Enabled: False")
 
