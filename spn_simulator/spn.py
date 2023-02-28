@@ -92,6 +92,7 @@ class Transition(object):
         else: raise Exception("Not a valid transition type.")
 
         self.handicap = 1 #Handicap for experiments with new configurations; Handicap will influence firing times of transition; <1 -> transition fill fire faster; >1 -> transition will fire slower
+        self.handicap_type = None
         self.allow_reset = False
         self.reset_threshold = 0 #Threshold; can be used e.g., for testing preventive maintenance with equipment failure transitions
         self.reset_time = 0
