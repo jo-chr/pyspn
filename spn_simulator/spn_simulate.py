@@ -46,8 +46,10 @@ def set_firing_time(transition: Transition):
     else: raise Exception("Distribution undefined for transition {}".format(transition))
 
     if transition.handicap != 1:
-        #transition.firing_delay = round(1-(transition.handicap-1),2)*transition.firing_delay
-        transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
+        if transition.handicap_type == "reduce":
+            transition.firing_delay = round(1-(transition.handicap-1),2)*transition.firing_delay
+        else:
+            transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
     if transition.t_type == "T":
         transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
 
