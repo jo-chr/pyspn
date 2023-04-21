@@ -18,7 +18,6 @@ def reset_state(spn: SPN):
         place.total_tokens = 0
         place.time_non_empty = 0
 
-
 def complete_statistics():
     None
 
@@ -30,31 +29,35 @@ def set_firing_time(transition: Transition):
 
     if transition.t_type == "I":
         transition.firing_delay = 0.0
-    elif transition.t_type == "T" and transition.distribution == "DET":
-        transition.firing_delay = get_delay("DET", delay=transition.dist_par1)   
-    elif transition.t_type == "T" and transition.distribution == "EXP":
-        transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
-    elif transition.t_type == "T" and transition.distribution == "NORM":
-        transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
-    elif transition.t_type == "T" and transition.distribution == "LOGN":
-        transition.firing_delay = get_delay("LOGN", mean= transition.dist_par1, sigma= transition.dist_par2)
-    elif transition.t_type == "T" and transition.distribution == "WEIBULL":
-        transition.firing_delay = get_delay("WEIBULL", lmbda=transition.dist_par1, a = transition.dist_par2)
-    elif transition.t_type == "T" and transition.distribution == "ECDF":
-        transition.firing_delay = get_delay("ECDF", ecdf = transition.dist_par1)
-    elif transition.t_type == "T" and transition.distribution == "SCIPY_HIST":
-        transition.firing_delay = get_delay("SCIPY_HIST", rv_hist = transition.dist_par1)
-    elif transition.t_type == "T" and transition.distribution == "SCHEDULE":
-        transition.firing_delay = get_delay("SCHEDULE", schedule = transition.dist_par1, schedule_iterator=SCHEDULE_ITERATOR) 
-        SCHEDULE_ITERATOR += 1
-    else: raise Exception("Distribution undefined for transition {}".format(transition))
+    elif transition.t_type == "T":
+        match transition.distribution:
+            case "DET":
+                transition.firing_delay = get_delay("DET", delay=transition.dist_par1)   
+            case "EXP":
+                transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
+            case "NORM":
+                transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
+            case "LOGN":
+                transition.firing_delay = get_delay("LOGN", mean= transition.dist_par1, sigma= transition.dist_par2)
+            case "WEIBULL":
+                transition.firing_delay = get_delay("WEIBULL", lmbda=transition.dist_par1, a = transition.dist_par2)
+            case "ECDF":
+                transition.firing_delay = get_delay("ECDF", ecdf = transition.dist_par1)
+            case "SCIPY_HIST":
+                transition.firing_delay = get_delay("SCIPY_HIST", rv_hist = transition.dist_par1)
+            case "SCHEDULE":
+                transition.firing_delay = get_delay("SCHEDULE", schedule = transition.dist_par1, schedule_iterator=SCHEDULE_ITERATOR) 
+                SCHEDULE_ITERATOR += 1
+            case _:
+                raise Exception("Distribution undefined for transition {}".format(transition))
 
     if transition.handicap != 1:
         if transition.handicap_type == "reduce":
             transition.firing_delay = round(1-(transition.handicap-1),2)*transition.firing_delay
         else:
             transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
-    if transition.t_type == "T":
+    
+    if transition.t_type == "T" and SIMULATION_TIME_UNIT != None:
         transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
 
     transition.firing_time = transition.enabled_at + transition.firing_delay
@@ -63,9 +66,7 @@ def set_reset_time(transition: Transition):
     transition.reset_time = transition.enabled_at + transition.reset_threshold
 
 def convert_delay(delay, time_unit = None, simulation_time_unit = None):
-    if time_unit == simulation_time_unit:
-        return delay
-    elif time_unit == "d" and simulation_time_unit == "h":
+    if time_unit == "d" and simulation_time_unit == "h":
         return delay * 24
 
 def is_enabled(transition: Transition):
@@ -222,7 +223,7 @@ def process_next_event(spn: SPN, max_time):
 
     update_enabled_flag(spn)
 
-def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol = True):
+def simulate(spn: SPN, max_time = 10, time_unit = None, verbosity = 2, protocol = True):
     
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, SCHEDULE_ITERATOR
 
@@ -234,7 +235,7 @@ def simulate(spn: SPN, max_time = 10, time_unit = "h", verbosity = 2, protocol =
 
     #clear protocol
     if protocol == True:
-        with open(os.getcwd() + "/spn_simulator/output/protocol/protocol.csv", "w", newline="") as protocol:
+        with open(os.getcwd() + "/output/protocol/protocol.csv", "w", newline="") as protocol:
             writer = csv.writer(protocol)
             writer.writerow(["Place","Time","Marking"])
 
