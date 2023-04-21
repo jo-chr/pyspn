@@ -1,7 +1,7 @@
-from spn_simulator.spn import *
-from spn_simulator.spn_simulate import simulate
-from spn_simulator.spn_io import print_petri_net
-from spn_simulator.spn_visualization import *
+from components.spn import *
+from components.spn_simulate import simulate
+from components.spn_io import print_petri_net
+from components.spn_visualization import *
 
 spn = SPN()
 
