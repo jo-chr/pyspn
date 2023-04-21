@@ -9,7 +9,7 @@ A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 
 ## Getting Started
 
-:information_source: *Tested with Python 3.10*
+:information_source: *Tested with Python 3.11*
 
 ### via git
 
@@ -29,11 +29,13 @@ For immediate transitions, you can set the transition weight.
 
 For timed transitions, the following distributions are currently supported:
 
-| Distribution         | Parameter   | Parameter mapping in tool        |
-|----------------------|-------------|----------------------------------|
-| Exponential ("EXP")  | `lambda`    | `parameter1 = lambda`            |
-| Normal ("NORM")      | `a`, `b`    | `parameter1 = a, parameter2 = b` |
-| Deterministic ("DET")| `delay`     | `parameter1 = delay`             |
+| Distribution         | Parameter      | Transition parameter mapping in tool   |
+|----------------------|----------------|----------------------------------------|
+| Deterministic ("DET")| `delay`        | `parameter1 = delay`                   |
+| Exponential ("EXP")  | `lambda`       | `parameter1 = lambda`                  |
+| Normal ("NORM")      | `a`, `b`       | `parameter1 = a, parameter2 = b`       |
+| Lognormal ("LOGN")   | `mean`, `sigma`| `parameter1 = mean, parameter2 = sigma`|
+| Weibull ("WEIBULL")  | `a`, `lambda`  | `parameter1 = a, parameter2 = lambda`  |
 
 More distributions can be easily implemented in `RNGFactory.py`.
 
@@ -46,6 +48,8 @@ Simulate the SPN as shown in `server_example.py`. The simulation protocol captur
 Visualize the SPN as shown in `server_example.py`. The graph can be found under `output/graphs/`.
 
 ## Usage & Attribution
+
+contact jofr@mmmi.sdu.dk
 
 
  
