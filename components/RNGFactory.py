@@ -3,7 +3,7 @@ import random
 from statsmodels.distributions.empirical_distribution import ECDF
 from scipy.stats import rv_histogram
 
-def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf = ECDF, rv_hist = rv_histogram, schedule = [], schedule_iterator = 0):
+def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, mean = 0, sigma = 0, ecdf = ECDF, rv_hist = rv_histogram, schedule = [], schedule_iterator = 0):
 
     if distribution == "DET":
         return delay
@@ -13,6 +13,12 @@ def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, ecdf
 
     if distribution == "NORM":
         return np.random.normal(a,b)
+    
+    if distribution == "LOGN":
+        return np.random.lognormal(mean, sigma)
+    
+    if distribution == "WEIBULL":
+        return lmbda * np.random.weibull(a)
 
     if distribution == "ECDF":
         rn = random.uniform(0, 1)

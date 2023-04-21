@@ -36,6 +36,10 @@ def set_firing_time(transition: Transition):
         transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
     elif transition.t_type == "T" and transition.distribution == "NORM":
         transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
+    elif transition.t_type == "T" and transition.distribution == "LOGN":
+        transition.firing_delay = get_delay("LOGN", mean= transition.dist_par1, sigma= transition.dist_par2)
+    elif transition.t_type == "T" and transition.distribution == "WEIBULL":
+        transition.firing_delay = get_delay("WEIBULL", lmbda=transition.dist_par1, a = transition.dist_par2)
     elif transition.t_type == "T" and transition.distribution == "ECDF":
         transition.firing_delay = get_delay("ECDF", ecdf = transition.dist_par1)
     elif transition.t_type == "T" and transition.distribution == "SCIPY_HIST":
