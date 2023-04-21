@@ -1,5 +1,6 @@
 import csv
 import os
+import pickle
 
 from .spn import *
 
@@ -110,3 +111,10 @@ def write_to_protocol(place, simulation_time, n_tokens):
         writer = csv.writer(protocol)
         writer.writerow([place,str(round(simulation_time,2)),str(n_tokens)])
 
+def export_spn(spn: SPN, name = "default_spn.pkl"):
+    with open(os.getcwd() + "/output/models/" + name, 'wb') as spn_file:
+        pickle.dump(spn, spn_file)
+
+def import_spn(path):
+    with open(path, 'rb') as spn_file:
+        return pickle.load(spn_file)

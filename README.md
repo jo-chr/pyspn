@@ -39,6 +39,10 @@ For timed transitions, the following distributions are currently supported:
 
 More distributions can be easily implemented in `RNGFactory.py`.
 
+### Export & Import of SPNs
+
+Export and import SPNs as pickle files using `export()` and `import()` functions of `spn_io` module
+
 ## Simulation
 
 Simulate the SPN as shown in `server_example.py`. The simulation protocol capturing the place markings can be found under `output/protocol/`.
