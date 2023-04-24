@@ -33,7 +33,7 @@ def draw_spn(spn: SPN, file="spn_default", show=True):
         if transition.t_type == "T":
             spn_graph.node(transition.label, shape='rectangle', color='black', label='', xlabel=transition.label, height='0.2', width='0.6', fixedsize='true')
         else:
-            spn_graph.node(transition.label, shape='rectangle', style='filled', color='black', label='', xlabel=str(transition.weight), height='0.2', width='0.6', fixedsize='true')
+            spn_graph.node(transition.label, shape='rectangle', style='filled', color='black', label='', xlabel=transition.label + "\n" + str(transition.weight), height='0.2', width='0.6', fixedsize='true')
 
         input_arc:InputArc
         for input_arc in transition.input_arcs:
