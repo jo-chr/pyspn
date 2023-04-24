@@ -68,6 +68,8 @@ def set_reset_time(transition: Transition):
 def convert_delay(delay, time_unit = None, simulation_time_unit = None):
     if time_unit == "d" and simulation_time_unit == "h":
         return delay * 24
+    else:
+        return delay
 
 def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
@@ -223,11 +225,15 @@ def process_next_event(spn: SPN, max_time):
 
     update_enabled_flag(spn)
 
-def simulate(spn: SPN, max_time = 10, time_unit = None, verbosity = 2, protocol = True):
+def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True):
     
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, SCHEDULE_ITERATOR
 
-    SIMULATION_TIME = 0
+    if start_time == 0:
+        SIMULATION_TIME = 0
+    else:
+        SIMULATION_TIME = start_time
+        max_time = max_time + start_time
     SIMULATION_TIME_UNIT = time_unit
     VERBOSITY = verbosity
     PROTOCOL = protocol
