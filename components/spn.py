@@ -5,22 +5,6 @@ class SPN(object):
     def __init__(self):
         self.places = []
         self.transitions = []
-
-    def get_place_by_label(self, label: str):
-        try:
-            place: Place
-            for place in self.places:
-                if place.label == label:
-                    return place
-        except: print("No place found with specified label")
-
-    def get_transition_by_label(self, label: str):
-        try:
-            transition: Transition
-            for transition in self.transitions:
-                if transition.label == label:
-                    return transition
-        except: print("No transition found with specified label")
         
     def add_place(self, place: Place):            
         self.places.append(place)
@@ -51,6 +35,33 @@ class SPN(object):
         arc.multiplicity = multiplicity
         transition.output_arcs.append(arc)
         place.output_arcs.append(arc)
+
+    def get_place_by_label(self, label: str):
+        try:
+            place: Place
+            for place in self.places:
+                if place.label == label:
+                    return place
+        except: print("No place found with specified label.")
+
+    def get_transition_by_label(self, label: str):
+        try:
+            transition: Transition
+            for transition in self.transitions:
+                if transition.label == label:
+                    return transition
+        except: print("No transition found with specified label.")
+
+    def get_arrival_transitions(self):
+        try:
+            transition: Transition
+            arrival_transitions = []
+            for transition in self.transitions:
+                if transition.input_arcs == []:
+                    arrival_transitions.append(transition)
+            return arrival_transitions
+        except: print("Failed to find arrival transitions.")
+
         
 
 class Place():
