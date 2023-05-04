@@ -95,8 +95,6 @@ class Transition(object):
 
         if self.t_type == "T":
             self.distribution = None
-            self.dist_par1 = 0
-            self.dist_par2 = 0
             self.time_unit = None
         elif self.t_type == "I":
             self.weight = 1
@@ -124,11 +122,9 @@ class Transition(object):
         self.output_arcs = []
         self.inhibitor_arcs = []
 
-    def set_distribution(self, distribution: str = None, parameter1: float = 0, parameter2: float = 0, time_unit: str = None):
+    def set_distribution(self, distribution, a=0.0, b=0.0, c=0.0, d=0.0, time_unit:str = None):
         if self.t_type == "T":
-            self.distribution = distribution
-            self.dist_par1 = parameter1
-            self.dist_par2 = parameter2
+            self.distribution = {distribution:{"a":a,"b":b,"c":c,"d":d}}
             self.time_unit = time_unit
         else: raise Exception("Can not set distribution for immediate transition.")
     
