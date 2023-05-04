@@ -1,36 +1,39 @@
-import numpy as np
-import random
-from statsmodels.distributions.empirical_distribution import ECDF
-from scipy.stats import rv_histogram
+import scipy as sp
 
-def get_delay(distribution, delay: int = 0, lmbda: float = 0, a = 0, b = 0, mean = 0, sigma = 0, ecdf = ECDF, rv_hist = rv_histogram, schedule = [], schedule_iterator = 0):
+def get_delay(distribution, a=0.0, b=1.0, c=0.0, d=0.0):
 
-    if distribution == "DET":
-        return delay
+    if distribution == "det":
+        return a
+
+    if distribution == "norm":
+        return abs(sp.stats.norm.rvs(a, b))
+
+    if distribution == "uniform":
+        return abs(sp.stats.uniform.rvs(a, b))
+
+    if distribution == "cauchy":
+        return abs(sp.stats.cauchy.rvs(a, b))
+
+    if distribution == "triang":
+        return abs(sp.stats.triang.rvs(a, b, c))
+
+    if distribution == "expon":
+        return abs(sp.stats.expon.rvs(a, b))
+
+    if distribution == "weibull_min":
+        return abs(sp.stats.weibull_min.rvs(a, b, c))
+
+    if distribution == "weibull_max":
+        return abs(sp.stats.weibull_max.rvs(a, b, c))
+
+    if distribution == "lognorm":
+        return abs(sp.stats.lognorm.rvs(a, b, c))
+
+    if distribution == "gamma":
+        return abs(sp.stats.gamma.rvs(a, b, c))
+
+    if distribution == "poisson":
+        return abs(sp.stats.poisson.rvs(a, b))
     
-    if distribution == "EXP":
-        return np.random.exponential(scale = lmbda)
-
-    if distribution == "NORM":
-        return np.random.normal(a,b)
-    
-    if distribution == "LOGN":
-        return np.random.lognormal(mean, sigma)
-    
-    if distribution == "WEIBULL":
-        return lmbda * np.random.weibull(a)
-
-    if distribution == "ECDF":
-        rn = random.uniform(0, 1)
-        y_idx = min(range(len(ecdf.y)), key=lambda i: abs(ecdf.y[i]-rn))
-        return ecdf.x[y_idx]
-
-    if distribution == "SCIPY_HIST":
-        return rv_hist.rvs(size = 1)[0]*24 #days to hours
-
-    if distribution == "SCHEDULE":
-        try:
-            delay = schedule[schedule_iterator]
-            return delay
-        except: return np.mean(schedule) ## should restart schedule instead!
-        
+    if distribution == "exponpow":
+        return abs(sp.stats.exponpow.rvs(a, b, c))
