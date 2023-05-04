@@ -30,32 +30,25 @@ def set_firing_time(transition: Transition):
     if transition.t_type == "I":
         transition.firing_delay = 0.0
     elif transition.t_type == "T":
-        match transition.distribution:
-            case "DET":
-                transition.firing_delay = get_delay("DET", delay=transition.dist_par1)   
-            case "EXP":
-                transition.firing_delay = get_delay("EXP", lmbda = transition.dist_par1)
-            case "NORM":
-                transition.firing_delay = get_delay("NORM", a = transition.dist_par1, b = transition.dist_par2)
-            case "LOGN":
-                transition.firing_delay = get_delay("LOGN", mean= transition.dist_par1, sigma= transition.dist_par2)
-            case "WEIBULL":
-                transition.firing_delay = get_delay("WEIBULL", lmbda=transition.dist_par1, a = transition.dist_par2)
-            case "ECDF":
-                transition.firing_delay = get_delay("ECDF", ecdf = transition.dist_par1)
-            case "SCIPY_HIST":
-                transition.firing_delay = get_delay("SCIPY_HIST", rv_hist = transition.dist_par1)
-            case "SCHEDULE":
-                transition.firing_delay = get_delay("SCHEDULE", schedule = transition.dist_par1, schedule_iterator=SCHEDULE_ITERATOR) 
-                SCHEDULE_ITERATOR += 1
+        dist = list(transition.distribution.keys())[0]
+        parameters = list(transition.distribution[dist].values())
+        match dist:
+            case "det":
+                transition.firing_delay = get_delay("det", parameters[0])   
+            case "expon":
+                transition.firing_delay = get_delay("expon", parameters[0], parameters[1])
+            case "norm":
+                transition.firing_delay = get_delay("norm", parameters[0], parameters[1])
+            case "lognorm":
+                transition.firing_delay = get_delay("lognorm", parameters[0], parameters[1], parameters[2])
+            case "triang":
+                transition.firing_delay = get_delay("triang", parameters[0], parameters[1], parameters[2])
+            case "cauchy":
+                transition.firing_delay = get_delay("cauchy", parameters[0], parameters[1])
+            case "exponpow":
+                transition.firing_delay = get_delay("exponpow", parameters[0], parameters[1], parameters[2])
             case _:
                 raise Exception("Distribution undefined for transition {}".format(transition))
-
-    if transition.handicap != 1:
-        if transition.handicap_type == "reduce":
-            transition.firing_delay = round(1-(transition.handicap-1),2)*transition.firing_delay
-        else:
-            transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
     
     if transition.t_type == "T" and SIMULATION_TIME_UNIT != None:
         transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
