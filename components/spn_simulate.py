@@ -35,6 +35,8 @@ def set_firing_time(transition: Transition):
         match dist:
             case "det":
                 transition.firing_delay = get_delay("det", parameters[0])   
+            case "uniform":
+                transition.firing_delay = get_delay("uniform", parameters[0], parameters[1])
             case "expon":
                 transition.firing_delay = get_delay("expon", parameters[0], parameters[1])
             case "norm":
