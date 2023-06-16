@@ -27,17 +27,19 @@ Find example SPN in `server_example.py`. Currently, places, timed transitions (t
 
 For immediate transitions, you can set the transition weight.
 
-For timed transitions, the following distributions are currently supported:
+For timed transitions, some of the supported distributions are:
 
-| Distribution         | Parameter      | Transition parameter mapping in tool   |
-|----------------------|----------------|----------------------------------------|
-| Deterministic ("DET")| `delay`        | `parameter1 = delay`                   |
-| Exponential ("EXP")  | `lambda`       | `parameter1 = lambda`                  |
-| Normal ("NORM")      | `a`, `b`       | `parameter1 = a, parameter2 = b`       |
-| Lognormal ("LOGN")   | `mean`, `sigma`| `parameter1 = mean, parameter2 = sigma`|
-| Weibull ("WEIBULL")  | `a`, `lambda`  | `parameter1 = a, parameter2 = lambda`  |
+| Distribution           | Parameter      |
+|------------------------|----------------|
+| Deterministic ("det")  | `a`            |
+| Exponential ("expon")  | `a`, `b`       |
+| Normal ("norm")        | `a`, `b`       |
+| Lognormal ("lognorm")  | `a`, `b`, `c`  |
+| Uniform ("uniform")    | `a`, `b`       |
+| Triangular ("triang")  | `a`, `b`, `c`  |
+| Weibull ("weibull_min")| `a`, `b`, `c`  |
 
-More distributions can be easily implemented in `RNGFactory.py`.
+More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's documentation](https://docs.scipy.org/doc/scipy/reference/stats.html) for detials regarding the distribtuions and their parameters.
 
 ### Export & Import of SPNs
 
@@ -45,11 +47,11 @@ Export and import SPNs as pickle files using `export()` and `import()` functions
 
 ## Simulation
 
-Simulate the SPN as shown in `server_example.py`. The simulation protocol capturing the place markings can be found under `output/protocol/`.
+Simulate the SPN as shown in `one_server_example.py`. The simulation protocol capturing the place markings can be found under `output/protocol/`.
 
 ## Visualization
 
-Visualize the SPN as shown in `server_example.py`. The graph can be found under `output/graphs/`.
+Visualize the SPN as shown in `one_server_example.py`. The graph can be found under `output/graphs/`.
 
 ## Usage & Attribution
 
