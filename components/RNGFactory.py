@@ -4,6 +4,9 @@ def get_delay(distribution, a=0.0, b=1.0, c=0.0, d=0.0):
 
     if distribution == "det":
         return a
+    
+    if distribution == "uniform":
+        return abs(sp.stats.uniform.rvs(a, b))
 
     if distribution == "norm":
         return abs(sp.stats.norm.rvs(a, b))
