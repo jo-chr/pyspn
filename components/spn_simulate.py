@@ -75,7 +75,7 @@ def is_enabled(transition: Transition):
     
     arc: InhibitorArc
     for arc in inhibitor_arcs:
-        if arc.from_place.n_tokens > 0:
+        if arc.from_place.n_tokens >= arc.multiplicity:
             #print("inhibitor arc is blocking transition: " + transition.label)
             return False
 
