@@ -51,6 +51,8 @@ def set_firing_time(transition: Transition):
                 transition.firing_delay = get_delay("exponpow", parameters[0], parameters[1], parameters[2])
             case "gamma":
                 transition.firing_delay = get_delay("gamma", parameters[0], parameters[1], parameters[2])
+            case "weibull_min":
+                transition.firing_delay = get_delay("gamma", parameters[0], parameters[1], parameters[2])
             case _:
                 raise Exception("Distribution undefined for transition {}".format(transition))
     
