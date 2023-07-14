@@ -2,11 +2,13 @@ from graphviz import Digraph
 
 from .spn import *
 
-def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False):
+def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, rankdir="TB"):
 
-    spn_graph = Digraph(engine="dot")
-    #spn_graph = Digraph(engine="dot", graph_attr={'rankdir':'LR'})
-
+    if rankdir == "TB":
+        spn_graph = Digraph(engine="dot")
+    else:
+        spn_graph = Digraph(engine="dot", graph_attr={'rankdir':'LR'})
+    
     #spn_graph.attr('node', forcelabels='true', rankdir ='LR')
 
     # draw places and marking
@@ -35,9 +37,15 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False):
     transition:Transition
     for transition in spn.transitions:
         if transition.t_type == "T":
-            spn_graph.node(transition.label, shape='rectangle', color='black', label='', xlabel=transition.label + "\n" + str(list(transition.distribution.keys())[0]), height='0.2', width='0.6', fixedsize='true')
+            if rankdir == "TB":
+                spn_graph.node(transition.label, shape='rectangle', color='black', label='', xlabel=transition.label + "\n" + str(list(transition.distribution.keys())[0]), height='0.2', width='0.6', fixedsize='true')
+            else:
+                spn_graph.node(transition.label, shape='rectangle', color='black', label='', xlabel=transition.label + "\n" + str(list(transition.distribution.keys())[0]), height='0.6', width='0.2', fixedsize='true')
         else:
-            spn_graph.node(transition.label, shape='rectangle', style='filled', color='black', label='', xlabel=transition.label + "\n" + str(transition.weight), height='0.2', width='0.6', fixedsize='true')
+            if rankdir == "TB":
+                spn_graph.node(transition.label, shape='rectangle', style='filled', color='black', label='', xlabel=transition.label + "\n" + str(transition.weight), height='0.2', width='0.6', fixedsize='true')
+            else:
+                spn_graph.node(transition.label, shape='rectangle', style='filled', color='black', label='', xlabel=transition.label + "\n" + str(transition.weight), height='0.6', width='0.2', fixedsize='true')
 
         input_arc:InputArc
         for input_arc in transition.input_arcs:
