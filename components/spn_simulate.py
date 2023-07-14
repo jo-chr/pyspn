@@ -18,8 +18,18 @@ def reset_state(spn: SPN):
         place.total_tokens = 0
         place.time_non_empty = 0
 
-def complete_statistics():
-    None
+    for transition in spn.transitions:
+        transition:Transition
+        transition.n_times_fired = 0
+        transition.time_enabled = 0
+        transition.enabled_at = 0
+        transition.enabled = False
+
+def complete_statistics(spn: SPN):
+    # needs to be corrected
+    for transition in spn.transitions:
+        transition:Transition
+        transition.time_enabled += SIMULATION_TIME - transition.enabled_at
 
 def set_firing_time(transition: Transition):
     """Sets the firing time of a transition based on the transition type and distribution"""
@@ -52,9 +62,18 @@ def set_firing_time(transition: Transition):
             case "gamma":
                 transition.firing_delay = get_delay("gamma", parameters[0], parameters[1], parameters[2])
             case "weibull_min":
-                transition.firing_delay = get_delay("gamma", parameters[0], parameters[1], parameters[2])
+                transition.firing_delay = get_delay("weibull_min", parameters[0], parameters[1], parameters[2])
             case _:
                 raise Exception("Distribution undefined for transition {}".format(transition))
+            
+    if transition.handicap != 1:
+        if transition.handicap_type == "increase":
+            transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
+        elif transition.handicap_type == "decrease":
+            #print("old delay: " + str(transition.firing_delay))
+            transition.firing_delay = transition.firing_delay/round(transition.handicap,2)
+            #print("new delay: " + str(transition.firing_delay))
+
     
     if transition.t_type == "T" and SIMULATION_TIME_UNIT != None:
         transition.firing_delay = convert_delay(transition.firing_delay, time_unit=transition.time_unit, simulation_time_unit=SIMULATION_TIME_UNIT)
@@ -138,6 +157,7 @@ def fire_transition(transition: Transition):
             write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
 
     transition.n_times_fired += 1
+    transition.time_enabled += transition.firing_delay
     transition.reset()
 
 def find_next_resetting(spn: SPN):
@@ -267,7 +287,7 @@ def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosit
     if VERBOSITY > 0:
         print("\nTime: {}. Simulation terminated.\n".format(SIMULATION_TIME))
 
-    complete_statistics()
+    #complete_statistics(spn)
 
     if VERBOSITY > 0:
         print_statistics(spn,SIMULATION_TIME)
