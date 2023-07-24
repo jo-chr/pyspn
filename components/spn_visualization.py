@@ -8,8 +8,6 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, 
         spn_graph = Digraph(engine="dot")
     else:
         spn_graph = Digraph(engine="dot", graph_attr={'rankdir':'LR'})
-    
-    #spn_graph.attr('node', forcelabels='true', rankdir ='LR')
 
     # draw places and marking
     place:Place
