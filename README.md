@@ -14,14 +14,14 @@ A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 ### via git
 
 ```bash
-git clone https://github.com/jo-chr/spn-simulator.git  # 1. Clone repository
+git clone https://github.com/jo-chr/pyspn.git  # 1. Clone repository
 pip install -r requirements.txt  # 2. Install requirements
-python3 server_example.py  # 4. Run single-server queue example
+python3 examples/one_server.py  # 4. Run single-server queue example
 ```
 
 ## Modeling
 
-Find example SPN in `server_example.py`. Currently, places, timed transitions (t_type = "T"), immediate transitions (t_type = "I"), output arcs, input arcs and inhibitor arcs are supported.
+Find sample SPN in `one_server.py`. Currently, places, timed transitions (t_type = "T"), immediate transitions (t_type = "I"), output arcs, input arcs, inhibitor arcs, and guard functions are supported.
 
 ### Transitions
 
@@ -47,11 +47,11 @@ Export and import SPNs as pickle files using `export()` and `import()` functions
 
 ## Simulation
 
-Simulate the SPN as shown in `one_server_example.py`. The simulation protocol capturing the place markings can be found under `output/protocol/`.
+Simulate the SPN as shown in `one_server.py`. The simulation protocol capturing the place markings can be found under `output/protocol/`.
 
 ## Visualization
 
-Visualize the SPN as shown in `one_server_example.py`. The graph can be found under `output/graphs/`.
+Visualize the SPN as shown in `one_server.py`. The graph can be found under `output/graphs/`.
 
 ## Usage & Attribution
 

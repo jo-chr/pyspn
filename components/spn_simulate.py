@@ -11,25 +11,87 @@ VERBOSITY = 0
 PROTOCOL = False
 SCHEDULE_ITERATOR = 0
 
-def reset_state(spn: SPN):
+#
+def marking(place: Place) -> int:
+    return place.n_tokens
+
+def mean_tokens(place: Place) -> float:
+    return place.total_tokens/SIMULATION_TIME
+
+def p_not_empty(place: Place) -> float:
+    return place.time_non_empty/SIMULATION_TIME
+
+def p_enabled(transition: Transition) -> float:
+    return transition.time_enabled/SIMULATION_TIME
+
+def n_firings(transtion: Transition) -> int:
+    return transtion.n_times_fired
+
+def throughput(transition: Transition) -> float:
+    return transition.n_times_fired/SIMULATION_TIME
+
+def add_tokens(place: Place, n_tokens: int):
+    if PROTOCOL == True:
+        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+    place.total_tokens += place.n_tokens*(SIMULATION_TIME-place.time_changed)
+    if place.n_tokens > 0:
+        place.time_non_empty += SIMULATION_TIME-place.time_changed
+    place.time_changed = SIMULATION_TIME
+    place.n_tokens += n_tokens
+    if place.n_tokens > place.max_tokens:
+        place.max_tokens = place.n_tokens
+    if PROTOCOL == True:
+        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+
+def sub_tokens(place: Place, n_tokens: int):
+    if PROTOCOL == True:
+        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+    place.total_tokens += place.n_tokens*(SIMULATION_TIME-place.time_changed)
+    if place.n_tokens > 0:
+        place.time_non_empty += (SIMULATION_TIME-place.time_changed)
+    place.time_changed = SIMULATION_TIME
+    place.n_tokens -= n_tokens
+    if place.n_tokens < 0:
+        print("Negative number of tokens in Place {}".format(place))
+    if PROTOCOL == True:
+        write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+
+def get_initial_marking(spn: SPN):
+    marking = {}
     for place in spn.places:
         place:Place
-        place.time_changed = 0
-        place.total_tokens = 0
-        place.time_non_empty = 0
+        marking[place]=place.n_tokens
+    return marking
 
+def set_initial_marking(spn: SPN, marking):
+    for place in spn.places:
+        place:Place
+        place.n_tokens = marking[place]
+
+def reset_state(spn: SPN, marking):
+    for place in spn.places:
+        place:Place
+        place.n_tokens = 0
+        place.time_changed = 0.0
+        place.total_tokens = 0.0
+        place.time_non_empty = 0.0
+    
     for transition in spn.transitions:
         transition:Transition
-        transition.n_times_fired = 0
         transition.time_enabled = 0
+        transition.n_times_fired = 0
         transition.enabled_at = 0
         transition.enabled = False
+    
+    set_initial_marking(spn, marking)
 
 def complete_statistics(spn: SPN):
-    # needs to be corrected
+    for place in spn.places:
+        add_tokens(place, 0)
     for transition in spn.transitions:
-        transition:Transition
-        transition.time_enabled += SIMULATION_TIME - transition.enabled_at
+        transition: Transition
+        if transition.enabled == True:
+            transition.time_enabled += SIMULATION_TIME - transition.enabled_at
 
 def set_firing_time(transition: Transition):
     """Sets the firing time of a transition based on the transition type and distribution"""
@@ -70,9 +132,7 @@ def set_firing_time(transition: Transition):
         if transition.handicap_type == "increase":
             transition.firing_delay = round(transition.handicap,2)*transition.firing_delay
         elif transition.handicap_type == "decrease":
-            #print("old delay: " + str(transition.firing_delay))
             transition.firing_delay = transition.firing_delay/round(transition.handicap,2)
-            #print("new delay: " + str(transition.firing_delay))
 
     
     if transition.t_type == "T" and SIMULATION_TIME_UNIT != None:
@@ -93,12 +153,6 @@ def is_enabled(transition: Transition):
     """Checks wheter a transition is currently enabled"""
     input_arcs = transition.input_arcs
     inhibitor_arcs = transition.inhibitor_arcs
-    
-    arc: InhibitorArc
-    for arc in inhibitor_arcs:
-        if arc.from_place.n_tokens >= arc.multiplicity:
-            #print("inhibitor arc is blocking transition: " + transition.label)
-            return False
 
     arc: InputArc
     for arc in input_arcs:
@@ -107,187 +161,147 @@ def is_enabled(transition: Transition):
         else:
             #print("not enough tokens to enable transition: " + transition.label)
             return False
+    
+    arc: InhibitorArc
+    for arc in inhibitor_arcs:
+        if arc.from_place.n_tokens >= arc.multiplicity:
+            #print("inhibitor arc is blocking transition: " + transition.label)
+            return False
+        
+    if transition.guard_function != None:
+        return transition.guard_function()
+
     return True
 
 def update_enabled_flag(spn: SPN):
     """Updates the enabled flag for all transitions in a SPN"""
     transition: Transition
+    found_enabled = False
+
+    for transition in spn.transitions:
+        if is_enabled(transition) == False:
+            transition.enabled = False
+    
     for transition in spn.transitions:
         if is_enabled(transition) == True:
-            transition.enabled = True
-            if transition.firing_time == 0:
+            if transition.enabled == False:
                 set_firing_time(transition)
-            if transition.allow_reset == True and transition.reset_time == 0:
-                set_reset_time(transition)
-            else:
-                continue
-        else:
-            transition.enabled = False
-            if transition.t_type == "I":
-                transition.reset()
-
-def reset_transition(transition: Transition):
-    set_firing_time(transition)
-    set_reset_time(transition)
+            transition.enabled = True
+            found_enabled = True
+    
+    return found_enabled
 
 def fire_transition(transition: Transition):
     """Fires a transition"""
-    output_arcs = transition.output_arcs
     input_arcs = transition.input_arcs
-
-    oarc: OutputArc
-    place: Place
-    for oarc in output_arcs:
-        place = oarc.to_place
-        if place.n_tokens > 0:
-            place.time_non_empty += SIMULATION_TIME - place.time_changed
-        place.time_changed = SIMULATION_TIME
-        place.add_n_tokens(1)            #needs to be changed based on multiplicity of arc
-        if PROTOCOL == True:
-            write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+    output_arcs = transition.output_arcs
     
-    iarc: InputArc
+
+    iarc:InputArc
+    place: Place
     for iarc in input_arcs:
-        place = iarc.from_place
-        if place.n_tokens > 0:
-            place.time_non_empty += SIMULATION_TIME - place.time_changed
-        place.time_changed = SIMULATION_TIME
-        place.remove_n_tokens(1)        #needs to be changed based on multiplicity of arc
-        if PROTOCOL == True:
-            write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
+        sub_tokens(iarc.from_place,iarc.multiplicity)
+    
+    oarc:OutputArc
+    for oarc in output_arcs:
+        add_tokens(oarc.to_place, oarc.multiplicity)
 
     transition.n_times_fired += 1
     transition.time_enabled += transition.firing_delay
-    transition.reset()
+    transition.enabled = False
+    
+    if VERBOSITY > 2:
+        print("Firing transition {}".format(transition.label))
 
-def find_next_resetting(spn: SPN):
-    """Finds the next transition that need to be resetted based on min(resetting times)"""
-    transition: Transition
+def find_next_firing(spn:SPN)-> Transition:
 
-    resetting_times = {}
-    for transition in spn.transitions:
-        if transition.enabled == True and transition.allow_reset == True:
-            resetting_times[transition] = transition.reset_time
-        else:
-            continue    
+    total_prob = 0.0
+    inc_prob = 0.0
+    min_time = 1.0e9
+    next_trans = None
 
-    if not resetting_times:
-        return None
-    else:
-        return random.choice([t for t in resetting_times if resetting_times[t] == min(resetting_times.values())])
-
-
-def find_next_firing(spn: SPN):
-    """Finds the next transition that need to be fired based on min(firing times)"""
-    transition: Transition
-
-    total_prob = 0
-    inc_prob = 0
     for transition in spn.transitions:
         if transition.enabled == True and transition.t_type == "I":
             total_prob = total_prob + transition.weight
     
     if total_prob > 0:
+        min_time = SIMULATION_TIME
         ran = random.uniform(0,total_prob)
         for transition in spn.transitions:
             if transition.enabled == True and transition.t_type == "I":
                 inc_prob = inc_prob + transition.weight
                 if inc_prob > ran:
-                    return transition
-
-    firing_times = {}
+                    return transition, min_time
+                
     for transition in spn.transitions:
         if transition.enabled == True:
-            firing_times[transition] = transition.firing_time
-        else:
-            continue    
-    return random.choice([t for t in firing_times if firing_times[t] == min(firing_times.values())])
+            firing_due_at = transition.enabled_at + transition.firing_delay
+            if firing_due_at < min_time:
+                min_time = firing_due_at
+                next_trans = transition
+    return next_trans, min_time
 
 def process_next_event(spn: SPN, max_time):
 
     global SIMULATION_TIME
 
-    next_transition_reset: Transition
-    next_transition: Transition
-    next_transition_reset = find_next_resetting(spn)
-    next_transition = find_next_firing(spn)
+    next_transition, min_time = find_next_firing(spn)
 
-    if next_transition_reset == None:
-        if next_transition.firing_time > max_time:
-            SIMULATION_TIME = max_time
-            return None     
-        else:
-            SIMULATION_TIME = next_transition.firing_time
+    if min_time > max_time:
+        SIMULATION_TIME = max_time
+        return True
     else:
-        if next_transition.firing_time > max_time or next_transition_reset.reset_time > max_time:
-            SIMULATION_TIME = max_time
-            return None
-        else:
-            SIMULATION_TIME = min([next_transition.firing_time,next_transition_reset.reset_time])
-    
-    if next_transition_reset == None:
-        fire_transition(next_transition)
-        if VERBOSITY > 1:
-            print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
-    else:
-        if next_transition.firing_time < next_transition_reset.reset_time:
-            fire_transition(next_transition)
-            if VERBOSITY > 1:
-                print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
-        else:
-            reset_transition(next_transition_reset)
-            if VERBOSITY > 1:
-                print("\nTransition {} resets at time {}".format(next_transition_reset.label, round(SIMULATION_TIME,2)))
-    
+        SIMULATION_TIME = min_time
+    fire_transition(next_transition)
+
+    if VERBOSITY > 1:
+        print("\nTransition {} fires at time {}".format(next_transition.label, round(SIMULATION_TIME,2)))
+
     if VERBOSITY > 2:
         print_marking(spn,SIMULATION_TIME)
-
-    update_enabled_flag(spn)
+    
+    found_enabled = update_enabled_flag(spn)
+    return found_enabled
 
 def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True):
-    
-    global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL, SCHEDULE_ITERATOR
 
-    if start_time == 0:
-        SIMULATION_TIME = 0
-    else:
-        SIMULATION_TIME = start_time
-        max_time = max_time + start_time
-    SIMULATION_TIME_UNIT = time_unit
+    global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
+
     VERBOSITY = verbosity
-    PROTOCOL = protocol
-    SCHEDULE_ITERATOR = 0
-
-    #clear protocol
-    if protocol == True:
-        with open(os.getcwd() + "/output/protocol/protocol.csv", "w", newline="") as protocol:
-            writer = csv.writer(protocol)
-            writer.writerow(["Place","Time","Marking"])
-
 
     if VERBOSITY > 0:
         print("Starting simulation...")
         print("Simulation time limit = {}".format(max_time))
-    
-    reset_state(spn)
+
+    SIMULATION_TIME = 0
+    SIMULATION_TIME_UNIT = time_unit
+    PROTOCOL = protocol
+
+    if protocol == True:
+        with open(os.getcwd() + "/output/protocol/protocol.csv", "w", newline="") as protocol:
+            writer = csv.writer(protocol)
+            writer.writerow(["Place","Time","Marking"])   
+
+    initial_marking = get_initial_marking(spn)
+    reset_state(spn,initial_marking)
 
     if VERBOSITY > 1:
         print_marking(spn,SIMULATION_TIME)
-    
-    update_enabled_flag(spn)
-    
-    if VERBOSITY > 1:
-        print_state(spn,SIMULATION_TIME)
-    
-    while SIMULATION_TIME < max_time:
-        process_next_event(spn, max_time)
+
+    ok = update_enabled_flag(spn)
+
+    while SIMULATION_TIME < max_time and ok == True:
+        ok = process_next_event(spn, max_time)
         if verbosity > 2:
             print_state(spn,SIMULATION_TIME)
+
+    if ok == False:
+        print("No transitions enabled.")
 
     if VERBOSITY > 0:
         print("\nTime: {}. Simulation terminated.\n".format(SIMULATION_TIME))
 
-    #complete_statistics(spn)
+    complete_statistics(spn)
 
     if VERBOSITY > 0:
         print_statistics(spn,SIMULATION_TIME)

@@ -49,11 +49,15 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, 
 
         input_arc:InputArc
         for input_arc in transition.input_arcs:
-            spn_graph.edge(input_arc.from_place.label, input_arc.to_transition.label)
+            if input_arc.multiplicity > 1:
+                spn_graph.edge(input_arc.from_place.label, input_arc.to_transition.label, xlabel=str(input_arc.multiplicity))
+            else: spn_graph.edge(input_arc.from_place.label, input_arc.to_transition.label)
         
         output_arc:OutputArc
         for output_arc in transition.output_arcs:
-            spn_graph.edge(output_arc.from_transition.label, output_arc.to_place.label)
+            if output_arc.multiplicity > 1:
+                spn_graph.edge(output_arc.from_transition.label, output_arc.to_place.label, xlabel=str(output_arc.multiplicity))
+            else: spn_graph.edge(output_arc.from_transition.label, output_arc.to_place.label)
 
         inhibitor_arc:InhibitorArc
         for inhibitor_arc in transition.inhibitor_arcs:

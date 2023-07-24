@@ -36,6 +36,14 @@ class SPN(object):
         transition.output_arcs.append(arc)
         place.output_arcs.append(arc)
 
+    '''
+    def get_current_marking(self):
+        marking = {}
+        for place in self.places:
+            place:Place
+            marking[place]=place.n_tokens
+            return marking
+    '''
     def get_place_by_label(self, label: str):
         try:
             place: Place
@@ -77,7 +85,11 @@ class Place():
         self.input_arcs = []
         self.output_arcs = []
         self.inhibitor_arcs = []
+
+    def set_tokens(self, n_tokens: int):
+        self.n_tokens = n_tokens
     
+    '''
     def add_n_tokens(self, n_tokens: int):
         self.n_tokens += n_tokens
         if self.n_tokens > self.max_tokens:
@@ -86,9 +98,10 @@ class Place():
 
     def remove_n_tokens(self, n_tokens: int):
         self.n_tokens -= n_tokens
-
+    '''
 
 class Transition(object):
+
     def __init__(self, label: str, t_type: str):
         self.label = label
         self.t_type = t_type
@@ -133,12 +146,19 @@ class Transition(object):
             self.weight = weight
         else: raise Exception("Can not set weight for timed transition.")
 
+    def set_guard_function(self, guard_function):
+        self.guard_function = guard_function
+
+    def set_memory_policy(self, type):
+        self.memory_policy = type
+
+    '''
     def reset(self):
         self.enabled = False
         self.enabled_at = 0
         self.firing_delay = 0
         self.firing_time = 0
-
+    '''
 
 class InputArc(object):
     def __init__(self):

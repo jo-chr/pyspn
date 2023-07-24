@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../pyspn')
+
 from components.spn import *
 from components.spn_simulate import simulate
 from components.spn_io import print_petri_net
@@ -28,7 +31,7 @@ spn.add_output_arc(t2,p2)
 spn.add_input_arc(p2,t3)
 spn.add_inhibitor_arc(t2,p2)
 
-#simulate(spn, max_time = 100, verbosity = 2, protocol = True)
+simulate(spn, max_time = 100, verbosity = 2, protocol = True)
 
 #print_petri_net(spn)
-draw_spn(spn, show=False)
+draw_spn(spn, show=False, rankdir ="TB")
