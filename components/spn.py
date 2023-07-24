@@ -88,17 +88,6 @@ class Place():
 
     def set_tokens(self, n_tokens: int):
         self.n_tokens = n_tokens
-    
-    '''
-    def add_n_tokens(self, n_tokens: int):
-        self.n_tokens += n_tokens
-        if self.n_tokens > self.max_tokens:
-            self.max_tokens = self.n_tokens
-        self.total_tokens += n_tokens
-
-    def remove_n_tokens(self, n_tokens: int):
-        self.n_tokens -= n_tokens
-    '''
 
 class Transition(object):
 
@@ -151,14 +140,6 @@ class Transition(object):
 
     def set_memory_policy(self, type):
         self.memory_policy = type
-
-    '''
-    def reset(self):
-        self.enabled = False
-        self.enabled_at = 0
-        self.firing_delay = 0
-        self.firing_time = 0
-    '''
 
 class InputArc(object):
     def __init__(self):
