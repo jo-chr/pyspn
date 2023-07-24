@@ -11,7 +11,6 @@ VERBOSITY = 0
 PROTOCOL = False
 SCHEDULE_ITERATOR = 0
 
-#
 def marking(place: Place) -> int:
     return place.n_tokens
 
