@@ -3,7 +3,7 @@
     <img src="https://img.shields.io/github/last-commit/jo-chr/spn-simulator?color=blue">
 </p>
 
-# SPN-Simulator
+# PySPN
 
 A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 
@@ -21,7 +21,7 @@ python3 examples/one_server.py  # 4. Run single-server queue example
 
 ## Modeling
 
-Find sample SPN in `one_server.py`. Currently, places, timed transitions (t_type = "T"), immediate transitions (t_type = "I"), output arcs, input arcs, inhibitor arcs, and guard functions are supported.
+Find sample SPN under `examples/one_server.py`. Currently, places, timed transitions (t_type = "T"), immediate transitions (t_type = "I"), output arcs, input arcs, inhibitor arcs, and guard functions are supported.
 
 ### Transitions
 
