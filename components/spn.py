@@ -109,7 +109,7 @@ class Transition(object):
         self.reset_time = 0
 
         self.guard_function = None
-        self.memory_policy = None
+        self.memory_policy = "ENABLE"
         self.clock_active = False
 
         self.enabled = False
