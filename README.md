@@ -16,7 +16,7 @@ A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 ```bash
 git clone https://github.com/jo-chr/pyspn.git  # 1. Clone repository
 pip install -r requirements.txt  # 2. Install requirements
-python3 examples/one_server.py  # 4. Run single-server queue example
+python3 examples/one_server.py  # 3. Run single-server queue example
 ```
 
 ## Modeling
