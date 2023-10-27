@@ -107,7 +107,7 @@ def print_statistics(spn: SPN, simulation_time):
 
 def write_to_protocol(place, simulation_time, n_tokens):
     #TODO: Update this; maybe write to 2D list and then add to csv at the end
-    with open(os.getcwd() + "/output/protocol/protocol.csv", "a", newline="") as protocol:
+    with open(os.getcwd() + "/output/protocols/protocol.csv", "a", newline="") as protocol:
         writer = csv.writer(protocol)
         writer.writerow([place,str(round(simulation_time,2)),str(n_tokens)])
 
