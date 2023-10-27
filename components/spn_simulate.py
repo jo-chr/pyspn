@@ -277,7 +277,7 @@ def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosit
     PROTOCOL = protocol
 
     if protocol == True:
-        with open(os.getcwd() + "/output/protocol/protocol.csv", "w", newline="") as protocol:
+        with open(os.getcwd() + "/output/protocols/protocol.csv", "w", newline="") as protocol:
             writer = csv.writer(protocol)
             writer.writerow(["Place","Time","Marking"])   
 
