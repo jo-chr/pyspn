@@ -114,6 +114,8 @@ class Transition(object):
 
         self.enabled = False
         self.enabled_at = 0
+        self.disabled_at = 0
+        self.disabled_time = 0
         self.firing_delay = 0
         self.firing_time = 0
 

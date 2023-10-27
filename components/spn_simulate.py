@@ -179,12 +179,20 @@ def update_enabled_flag(spn: SPN):
 
     for transition in spn.transitions:
         if is_enabled(transition) == False:
+            #Transition is Race Enable and has just become disabled
+            if transition.enabled == True and transition.memory_policy == "AGE":
+                transition.disabled_at = SIMULATION_TIME
+                transition.clock_active = True
+
             transition.enabled = False
     
     for transition in spn.transitions:
         if is_enabled(transition) == True:
+            #Transition has just become enabled
             if transition.enabled == False:
-                set_firing_time(transition)
+                if transition.clock_active == True:
+                    transition.disabled_time += SIMULATION_TIME - transition.disabled_at
+                else: set_firing_time(transition)
             transition.enabled = True
             found_enabled = True
     
