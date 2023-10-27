@@ -43,7 +43,7 @@ More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's do
 
 ### Export & Import of SPNs
 
-Export and import SPNs as pickle files using `export()` and `import()` functions of `spn_io` module
+Export and import SPNs as pickle files using `export()` and `import()` functions of `spn_io` module.
 
 ## Simulation
 
