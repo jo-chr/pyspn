@@ -35,7 +35,7 @@ where:
 
 Each transition is represented as $T_i = (type, F)$, where $type \in \{timed,immediate\}$ indicates the type of the transition, and $F$ is either a probability distribution function if the corresponding transition is timed, or a firing weight or probability if it is immediate. 
 
-Find sample SPNs under `examples/`. Currently, places, timed transitions $(t \_type = "T")$, immediate transitions $(t \_type = "I")$, output arcs, input arcs, inhibitor arcs, guard functions, and memory policies are supported.
+Find sample SPNs under `examples/`. Currently, places, timed transitions (t\_type = "T"), immediate transitions (t\_type = "I"), output arcs, input arcs, inhibitor arcs, guard functions, and memory policies are supported.
 
 ### Places
 
