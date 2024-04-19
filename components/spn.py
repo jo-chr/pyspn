@@ -105,7 +105,7 @@ class Place:
 
 class Transition(object):
 
-    def __init__(self, label: str, t_type: str, combine=0, splite=0):
+    def __init__(self, label: str, t_type: str, combine=0, split=0):
         self.label = label
         self.t_type = t_type
 
@@ -142,7 +142,7 @@ class Transition(object):
 
         self.counter = 0
         self.combine = combine
-        self.splite=splite
+        self.split=split
 
     def set_distribution(self, distribution, a=0.0, b=0.0, c=0.0, d=0.0, time_unit:str = None):
         if self.t_type == "T":
