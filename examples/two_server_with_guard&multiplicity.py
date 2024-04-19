@@ -20,7 +20,7 @@ t2 = Transition("Approach Server 1","I")
 t2.set_weight(0.5)
 t3 = Transition("Approach Server 2","I")
 def guard_t3():
-    if p1.n_tokens >= 2:
+    if len(p1.tokens) >= 2:
         return True
     else: return False
 t3.set_weight(0.5)
