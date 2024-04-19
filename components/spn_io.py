@@ -106,13 +106,23 @@ def print_statistics(spn: SPN, simulation_time):
         print(" Time non empty:      {}\n".format(place.time_non_empty))
 
 def write_to_protocol(place, simulation_time, n_tokens):
-    with open(os.getcwd() + "/output/protocols/protocol.csv", "a", newline="") as protocol:
+    # Ensure the directory exists
+    # Assuming the current directory is 'output/protocols' and you want to create a file in 'output/protocols'
+    file_path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
+
+    # Since you are already in 'output/protocols', no need to navigate the directory structure
+    with open(file_path, "a", newline="") as protocol:
         writer = csv.writer(protocol)
         writer.writerow([place, str(round(simulation_time,2)), str(n_tokens)])
 
 def write_to_event_log(simulation_time, token_ids, place):
-    with open(os.getcwd() + "/output/event_logs/event_log.csv", "a", newline="") as event_log:
-        writer = csv.writer(event_log)
+    # Ensure the directory exists
+    # Assuming the current directory is 'output/protocols' and you want to create a file in 'output/protocols'
+    file_path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
+
+    # Since you are already in 'output/protocols', no need to navigate the directory structure
+    with open(file_path, "a", newline="") as protocol:
+        writer = csv.writer(protocol)
         writer.writerow([str(round(simulation_time,2)), str(token_ids), place])
 
 
