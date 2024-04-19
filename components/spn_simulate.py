@@ -226,7 +226,7 @@ def update_enabled_flag(spn: SPN):
 def fire_transition(transition: Transition):
     """Fires a transition, moving or generating tokens as described."""
     #Split or other situations
-    if transition.splite == 1:
+    if transition.split == 1:
         for iarc in transition.input_arcs:
             token_id = iarc.from_place.tokens.pop(0)
         if transition.counter <= len(transition.output_arcs):
@@ -290,7 +290,7 @@ def fire_transition(transition: Transition):
 
         for iarc in transition.input_arcs:
             # If the input place has tokens, move one to the output place
-            if len(transition.output_arcs) > 1 & transition.splite == 1:
+            if len(transition.output_arcs) > 1 & transition.split == 1:
                 for oarc in transition.output_arcs:
                     # Generate a new token
                     new_token = Token()
