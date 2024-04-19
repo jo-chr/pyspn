@@ -372,14 +372,12 @@ def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosit
     PROTOCOL = protocol
 
     if protocol == True:
-        path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
-        with open(path, "w", newline="") as protocol:
+        with open(os.getcwd() + "/output/protocols/protocol.csv", "w", newline="") as protocol:
             writer = csv.writer(protocol)
             writer.writerow(["Event","Time","Marking"])
 
-        path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
-        with open(path, "w", newline="") as protocol:
-            writer = csv.writer(protocol)
+        with open(os.getcwd() + "/output/event_logs/event_log.csv", "w", newline="") as event_log:
+            writer = csv.writer(event_log)
             writer.writerow(["Time_Stamp","ID","Event"])
 
     initial_marking = get_initial_marking(spn)
