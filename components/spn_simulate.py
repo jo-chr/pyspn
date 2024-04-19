@@ -31,20 +31,22 @@ def throughput(transition: Transition) -> float:
 
 def add_tokens(place: Place, n_tokens: int):
     # Assuming `tokens` is a list of token IDs in the Place class
-    current_number_of_tokens = len(place.tokens)  # Get the current number of tokens
 
     if PROTOCOL == True:
         # Write the protocol with the ID of the last added token, if any, or 'None'
         last_token_id = place.tokens[-1] if place.tokens else 'None'
-        write_to_protocol(place.label, SIMULATION_TIME, place.n_tokens)
+        print("MAX",place.tokens, place.label)
+        write_to_protocol(place.label, SIMULATION_TIME, len(place.tokens))
         write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
 
     # Update statistics calculations using the current_number_of_tokens instead of place.n_tokens
-    place.total_tokens += current_number_of_tokens * (SIMULATION_TIME - place.time_changed)
-    if current_number_of_tokens > 0:
+    place.total_tokens += len(place.tokens) * (SIMULATION_TIME - place.time_changed)
+    if len(place.tokens) > 0:
         place.time_non_empty += SIMULATION_TIME - place.time_changed
 
     place.time_changed = SIMULATION_TIME
+    place.n_tokens=len(place.tokens)
+    place.n_tokens += n_tokens
 
     # Handle the addition of new tokens
     for _ in range(n_tokens):
@@ -56,8 +58,6 @@ def add_tokens(place: Place, n_tokens: int):
 
     # Correctly calling write_to_protocol at the end of the function
     if PROTOCOL:
-        # If tokens were added, log the last token's ID; otherwise, log a placeholder or 'None'
-        last_token_id = place.tokens[-1] if place.tokens else 'None'
         write_to_protocol(place.label, SIMULATION_TIME, place.n_tokens)
         write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
 
@@ -357,7 +357,7 @@ def process_next_event(spn: SPN, max_time):
     found_enabled = update_enabled_flag(spn)
     return found_enabled
 
-def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True, event_log = True):
+def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True):
 
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
 
@@ -372,13 +372,14 @@ def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosit
     PROTOCOL = protocol
 
     if protocol == True:
-        with open(os.getcwd() + "/output/protocols/protocol.csv", "w", newline="") as protocol:
+        path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
+        with open(path, "w", newline="") as protocol:
             writer = csv.writer(protocol)
             writer.writerow(["Event","Time","Marking"])
 
-    if event_log == True:
-        with open(os.getcwd() + "/output/event_logs/event_log.csv", "w", newline="") as event_log:
-            writer = csv.writer(event_log)
+        path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
+        with open(path, "w", newline="") as protocol:
+            writer = csv.writer(protocol)
             writer.writerow(["Time_Stamp","ID","Event"])
 
     initial_marking = get_initial_marking(spn)
