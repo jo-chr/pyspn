@@ -11,25 +11,32 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, 
 
     # draw places and marking
     place:Place
+    # Draw places and marking
     for place in spn.places:
-        if place.n_tokens == 0:
-            if print_place_labels == True:
-                spn_graph.node(place.label, shape="circle", label="", xlabel=place.label, height="0.6", width="0.6", fixedsize='true')
-            else: spn_graph.node(place.label, shape="circle", label="", height="0.6", width="0.6", fixedsize='true')
-        else:
-            if place.n_tokens < 5:
-                lb = "<"
-                for token_number in range(1, place.n_tokens+1):
-                    lb = lb + "&#9679;"
-                    if token_number % 2 == 0:
-                        lb = lb + "<br/>"
-                lb = lb + ">"
+        token_count = len(place.tokens)  # Get the count of tokens from the tokens list
+
+        if token_count == 0:
+            if print_place_labels:
+                spn_graph.node(place.label, shape="circle", label="", xlabel=place.label, height="0.6", width="0.6",
+                               fixedsize='true')
             else:
-                lb = "{}".format(place.n_tokens)
-            
-            if print_place_labels == True:
-                spn_graph.node(place.label, shape='circle', label=lb, xlabel=place.label, height='0.6', width='0.6', fixedsize='true')
-            else: spn_graph.node(place.label, shape='circle', label=lb, height='0.6', width='0.6', fixedsize='true')
+                spn_graph.node(place.label, shape="circle", label="", height="0.6", width="0.6", fixedsize='true')
+        else:
+            if token_count < 5:
+                lb = "<"
+                for token_number in range(1, token_count + 1):
+                    lb += "&#9679;"
+                    if token_number % 2 == 0:
+                        lb += "<br/>"
+                lb += ">"
+            else:
+                lb = f"{token_count}"
+
+            if print_place_labels:
+                spn_graph.node(place.label, shape='circle', label=lb, xlabel=place.label, height='0.6', width='0.6',
+                               fixedsize='true')
+            else:
+                spn_graph.node(place.label, shape='circle', label=lb, height='0.6', width='0.6', fixedsize='true')
 
     # draw transitions
     transition:Transition
@@ -63,6 +70,6 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, 
                 spn_graph.edge(inhibitor_arc.from_place.label, inhibitor_arc.to_transition.label, xlabel=str(inhibitor_arc.multiplicity), arrowhead="dot")
             else: spn_graph.edge(inhibitor_arc.from_place.label, inhibitor_arc.to_transition.label, arrowhead="dot")
 
-    spn_graph.render('output/graphs/{}.gv'.format(file), view=show)
+    spn_graph.render('../output/graphs/{}.gv'.format(file), view=show)
 
     return spn_graph
