@@ -77,7 +77,7 @@ More distributions can be easily implemented in `RNGFactory.py`. See [Scipy's do
 Guard functions are defined like so:
 ```bash
 def guard_t1():
-    if p1.n_tokens >= 2:
+    if len(p1.n_tokens) >= 2:
         return True
     else: return False
 t1.set_guard_function(guard_t1)
