@@ -1,4 +1,5 @@
 from __future__ import annotations
+import uuid
 
 class SPN(object):
 
@@ -72,11 +73,17 @@ class SPN(object):
 
         
 
-class Place():
+class Place:
 
     def __init__(self, label: str, n_tokens: int):
         self.label = label
-        self.n_tokens = n_tokens
+
+        self.tokens = []
+
+        # Generate initial tokens and ensure they are unique and use the global ID system
+        for _ in range(n_tokens):
+            self.tokens.append(Token())
+
         self.max_tokens = 0
         self.time_changed = 0
         self.total_tokens = 0
@@ -87,11 +94,18 @@ class Place():
         self.inhibitor_arcs = []
 
     def set_tokens(self, n_tokens: int):
-        self.n_tokens = n_tokens
+        # Adjust the tokens list to the new number of tokens, handling both increases and decreases
+        current_tokens = len(self.tokens)
+        if n_tokens > current_tokens:
+            # Add new tokens if the number has increased
+            self.tokens.extend([str(uuid.uuid4()) for _ in range(n_tokens - current_tokens)])
+        elif n_tokens < current_tokens:
+            # Remove tokens if the number has decreased
+            self.tokens = self.tokens[:n_tokens]
 
 class Transition(object):
 
-    def __init__(self, label: str, t_type: str):
+    def __init__(self, label: str, t_type: str, combine=0, splite=0):
         self.label = label
         self.t_type = t_type
 
@@ -125,6 +139,10 @@ class Transition(object):
         self.input_arcs = []
         self.output_arcs = []
         self.inhibitor_arcs = []
+
+        self.counter = 0
+        self.combine = combine
+        self.splite=splite
 
     def set_distribution(self, distribution, a=0.0, b=0.0, c=0.0, d=0.0, time_unit:str = None):
         if self.t_type == "T":
@@ -160,3 +178,18 @@ class OutputArc(object):
         self.to_place = None
         self.from_transition = None
         self.multiplicity = 0
+
+
+# Hypothetical Token class implementation
+class Token:
+    _id_counter = 0
+
+    def __init__(self):
+        type(self)._id_counter += 1
+        self.id = type(self)._id_counter
+
+    def __str__(self):
+        return str(self.id)
+
+    def __repr__(self):
+        return f"Token({self.id})"
