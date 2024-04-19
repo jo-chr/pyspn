@@ -357,7 +357,7 @@ def process_next_event(spn: SPN, max_time):
     found_enabled = update_enabled_flag(spn)
     return found_enabled
 
-def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True):
+def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosity = 2, protocol = True, event_log = True):
 
     global SIMULATION_TIME, SIMULATION_TIME_UNIT, VERBOSITY, PROTOCOL
 
@@ -377,9 +377,10 @@ def simulate(spn: SPN, max_time = 10, start_time = 0, time_unit = None, verbosit
             writer = csv.writer(protocol)
             writer.writerow(["Event","Time","Marking"])
 
+    if event_log == True:
         path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
-        with open(path, "w", newline="") as protocol:
-            writer = csv.writer(protocol)
+        with open(path, "w", newline="") as event_log:
+            writer = csv.writer(event_log)
             writer.writerow(["Time_Stamp","ID","Event"])
 
     initial_marking = get_initial_marking(spn)
