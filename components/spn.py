@@ -1,6 +1,5 @@
 from __future__ import annotations
 import uuid
-
 class SPN(object):
 
     def __init__(self):
@@ -77,7 +76,7 @@ class Place:
 
     def __init__(self, label: str, n_tokens: int):
         self.label = label
-
+        self.n_tokens = n_tokens
         self.tokens = []
 
         # Generate initial tokens and ensure they are unique and use the global ID system
