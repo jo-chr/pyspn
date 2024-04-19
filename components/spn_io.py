@@ -106,10 +106,19 @@ def print_statistics(spn: SPN, simulation_time):
         print(" Time non empty:      {}\n".format(place.time_non_empty))
 
 def write_to_protocol(place, simulation_time, n_tokens):
-    #TODO: Update this; maybe write to 2D list and then add to csv at the end
-    with open(os.getcwd() + "/output/protocols/protocol.csv", "a", newline="") as protocol:
+    file_path = os.path.join(os.getcwd(), "../output/protocols/protocol.csv")
+
+    with open(file_path, "a", newline="") as protocol:
         writer = csv.writer(protocol)
-        writer.writerow([place,str(round(simulation_time,2)),str(n_tokens)])
+        writer.writerow([place, str(round(simulation_time,2)), str(n_tokens)])
+
+def write_to_event_log(simulation_time, token_ids, place):
+    file_path = os.path.join(os.getcwd(), "../output/event_logs/event_log.csv")
+
+    with open(file_path, "a", newline="") as protocol:
+        writer = csv.writer(protocol)
+        writer.writerow([str(round(simulation_time,2)), str(token_ids), place])
+
 
 def export_spn(spn: SPN, name = "default_spn.pkl"):
     with open(os.getcwd() + "/output/models/" + name, 'wb') as spn_file:
