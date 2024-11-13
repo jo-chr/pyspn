@@ -226,7 +226,7 @@ def update_enabled_flag(spn: SPN):
 
 def fire_transition(transition: Transition):
     """Fires a transition, moving or generating tokens as described."""
-    if transition.Fork == 1:
+    if transition.Fork == True:
         for iarc in transition.input_arcs:
             if PROTOCOL:  # Log the state before tokens start moving
                 write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
@@ -252,7 +252,7 @@ def fire_transition(transition: Transition):
                 write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
                 for oarc in transition.output_arcs:
                     write_to_protocol(oarc.to_place.label, SIMULATION_TIME,len(oarc.to_place.tokens))
-            if transition.Join == 1:
+            if transition.Join == True:
                 # Collect token IDs for joined logging
                 for _ in range(iarc.multiplicity):
                     if iarc.from_place.tokens:
