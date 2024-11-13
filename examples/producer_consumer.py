@@ -9,18 +9,18 @@ from components.spn_visualization import *
 spn = SPN()
 
 p1 = Place("Producing",1)
-p2 = Place("Sending",0)
+p2 = Place("Produced",0)
 p3 = Place("BusyBuffers",0)
 p4 = Place("FreeBuffers",2)
 p5 = Place("Consuming",1)
-p6 = Place("Receiving",0)
+p6 = Place("Consumed",0)
 
 
 t1 = Transition("Produce","T")
 t1.set_distribution("expon", a=0.0, b=1.0/1.0)
 #t1.set_distribution("det",1)
-t2 = Transition("Fill","I")
-t3 = Transition("Remove","I")
+t2 = Transition("Fill","I",Fork=True,Join=True)
+t3 = Transition("Remove","I",Fork=True, Join=True)
 t4 = Transition("Consume","T")
 t4.set_distribution("expon", a=0.0, b=1.0/1.0)
 #t3.set_distribution("det",1)
@@ -50,7 +50,7 @@ spn.add_input_arc(p5,t4)
 spn.add_output_arc(t4,p6)
 spn.add_input_arc(p6,t3)
 
-simulate(spn, max_time = 5, verbosity = 4, protocol = True, event_log= True)
+simulate(spn, max_time = 100, verbosity = 1, protocol = True, event_log= False)
 
 #print_petri_net(spn)
 draw_spn(spn, show=True, rankdir="LR")
