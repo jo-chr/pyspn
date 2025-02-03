@@ -34,10 +34,7 @@ def add_tokens(place: Place, n_tokens: int):
 
     if PROTOCOL == True:
         # Write the protocol with the ID of the last added token, if any, or 'None'
-        last_token_id = place.tokens[-1] if place.tokens else 'None'
-        print("MAX",place.tokens, place.label)
         write_to_protocol(place.label, SIMULATION_TIME, len(place.tokens))
-        write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
 
     # Update statistics calculations using the current_number_of_tokens instead of place.n_tokens
     place.total_tokens += len(place.tokens) * (SIMULATION_TIME - place.time_changed)
@@ -59,13 +56,11 @@ def add_tokens(place: Place, n_tokens: int):
     # Correctly calling write_to_protocol at the end of the function
     if PROTOCOL:
         write_to_protocol(place.label, SIMULATION_TIME, place.n_tokens)
-        write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
 
 
 def sub_tokens(place: Place, n_tokens: int):
     if PROTOCOL == True:
         write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
-        write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
     place.total_tokens += place.n_tokens*(SIMULATION_TIME-place.time_changed)
     if place.n_tokens > 0:
         place.time_non_empty += (SIMULATION_TIME-place.time_changed)
@@ -75,7 +70,6 @@ def sub_tokens(place: Place, n_tokens: int):
         print("Negative number of tokens in Place {}".format(place))
     if PROTOCOL == True:
         write_to_protocol(place.label,SIMULATION_TIME,place.n_tokens)
-        write_to_event_log(SIMULATION_TIME, last_token_id, place.label)
 
 def get_initial_marking(spn: SPN):
     marking = {}
@@ -235,13 +229,13 @@ def fire_transition(transition: Transition):
             for index in range(iarc.multiplicity):
                 if iarc.from_place.tokens:
                     token_id = iarc.from_place.tokens.pop(0)
-                    write_to_event_log(SIMULATION_TIME, token_id, iarc.from_place.label)  # Log every token movement
+                    write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
         if transition.counter <= len(transition.output_arcs):
             for oarc in transition.output_arcs:
                 for index in range(oarc.multiplicity):
                     new_token = Token()
                     oarc.to_place.tokens.append(new_token.id)
-                    write_to_event_log(SIMULATION_TIME, new_token.id, oarc.to_place.label)  # Log new token
+                    write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)  # Log new token
                     if index == oarc.multiplicity - 1 and PROTOCOL:
                         write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
                         write_to_protocol(oarc.to_place.label, SIMULATION_TIME,len(oarc.to_place.tokens))
@@ -271,7 +265,7 @@ def fire_transition(transition: Transition):
                         token_id = iarc.from_place.tokens.pop(0)
                         for oarc in transition.output_arcs:
                             oarc.to_place.tokens.append(token_id)
-                            write_to_event_log(SIMULATION_TIME, token_id, oarc.to_place.label)
+                            write_to_event_log(SIMULATION_TIME, token_id, transition.label)
                             if index == iarc.multiplicity - 1 and PROTOCOL:
                                 write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
                                 write_to_protocol(oarc.to_place.label, SIMULATION_TIME,len(oarc.to_place.tokens))
@@ -284,7 +278,7 @@ def fire_transition(transition: Transition):
                     write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))
                     new_token = Token()
                     oarc.to_place.tokens.append(new_token.id)
-                    write_to_event_log(SIMULATION_TIME, new_token.id, oarc.to_place.label)
+                    write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)
                     if index == oarc.multiplicity - 1 and PROTOCOL:
                         write_to_protocol(oarc.to_place.label, SIMULATION_TIME, len(oarc.to_place.tokens))  # Log after moving
 
