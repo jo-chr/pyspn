@@ -259,7 +259,7 @@ def fire_transition(transition: Transition):
                         oarc.to_place.tokens.append(new_token.id)
                         if PROTOCOL:
                             write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
-        else:
+            else:
                 for index in range(iarc.multiplicity):
                     if iarc.from_place.tokens:
                         token_id = iarc.from_place.tokens.pop(0)
