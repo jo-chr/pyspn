@@ -136,6 +136,11 @@ draw_spn(spn, show=False, file="sample_spn", rankdir="LR")
 ```
 The graph can be found under `output/graphs/`. 
 
+Output graph example for the example "two_server_with_guard&multiplicity.py"
+
+![image](https://github.com/user-attachments/assets/13ff155f-4f87-4f9c-9055-64a1f39b2189)
+
+
 ## Usage & Attribution
 
 If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
