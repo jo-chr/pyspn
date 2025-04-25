@@ -54,4 +54,4 @@ spn.add_inhibitor_arc(t3,p3,multiplicity=2)
 simulate(spn, max_time = 100, verbosity = 2, protocol = True, event_log = True)
 
 #print_petri_net(spn)
-draw_spn(spn, show=False,rankdir="TB")
+draw_spn(spn, show=False,rankdir="LR")
