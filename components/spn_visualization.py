@@ -67,8 +67,20 @@ def draw_spn(spn: SPN, file="spn_default", show=True, print_place_labels=False, 
         inhibitor_arc:InhibitorArc
         for inhibitor_arc in transition.inhibitor_arcs:
             if inhibitor_arc.multiplicity > 1:
-                spn_graph.edge(inhibitor_arc.from_place.label, inhibitor_arc.to_transition.label, xlabel=str(inhibitor_arc.multiplicity), arrowhead="dot")
-            else: spn_graph.edge(inhibitor_arc.from_place.label, inhibitor_arc.to_transition.label, arrowhead="dot")
+                spn_graph.edge(
+                    inhibitor_arc.from_place.label,
+                    inhibitor_arc.to_transition.label,
+                    xlabel=str(inhibitor_arc.multiplicity),
+                    arrowhead="odot",
+                    color="black"
+                )
+            else:
+                spn_graph.edge(
+                    inhibitor_arc.from_place.label,
+                    inhibitor_arc.to_transition.label,
+                    arrowhead="odot",
+                    color="black"
+                )
 
     spn_graph.render('../output/graphs/{}.gv'.format(file), view=show)
 
