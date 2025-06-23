@@ -157,7 +157,7 @@ If you are using the tool for a scientific project please consider citing our [p
         note = {preprint}
     } 
 
-# SAGE Publications Sage 2025 (Journal Paper)
+    # SAGE Publications Sage 2025 (Journal Paper)
     @article{friederich2025pyspn,
       title={PySPN: a Python library for stochastic Petri net modeling, simulation, and event log generation},
       author={Friederich, Jonas and Khodadadi, Atieh and Lazarova-Molnar, Sanja},
