@@ -145,6 +145,16 @@ Output graph example for the example "two_server_with_guard&multiplicity.py"
 
 If you are using the tool for a scientific project please consider citing our [publication](https://www.researchgate.net/publication/375758652_PySPN_An_Extendable_Python_Library_for_Modeling_Simulation_of_Stochastic_Petri_Nets):
 
+    # SAGE Publications Sage 2025 (Journal Paper)
+    @article{friederich2025pyspn,
+      title={PySPN: a Python library for stochastic Petri net modeling, simulation, and event log generation},
+      author={Friederich, Jonas and Khodadadi, Atieh and Lazarova-Molnar, Sanja},
+      journal={SIMULATION},
+      pages={00375497251343625},
+      year={2025},
+      publisher={SAGE Publications Sage UK: London, England}
+    }
+    
     # EAI SIMUtools 2023 - 15th EAI International Conference on Simulation Tools and Techniques (preprint, accepted for presentation)
     @misc{friederich_2023,
         doi = {10.13140/RG.2.2.25334.16967},
@@ -157,15 +167,7 @@ If you are using the tool for a scientific project please consider citing our [p
         note = {preprint}
     } 
 
-    # SAGE Publications Sage 2025 (Journal Paper)
-    @article{friederich2025pyspn,
-      title={PySPN: a Python library for stochastic Petri net modeling, simulation, and event log generation},
-      author={Friederich, Jonas and Khodadadi, Atieh and Lazarova-Molnar, Sanja},
-      journal={SIMULATION},
-      pages={00375497251343625},
-      year={2025},
-      publisher={SAGE Publications Sage UK: London, England}
-    }
+
 
 For questions/feedback feel free to contact me: jofr@mmmi.sdu.dk.
 
