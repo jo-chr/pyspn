@@ -143,7 +143,7 @@ Output graph example for the example "two_server_with_guard&multiplicity.py"
 
 ## Usage & Attribution
 
-If you are using the tool for a scientific project please consider citing our [publication]([https://journals.sagepub.com/doi/pdf/10.1177/00375497251343625]):
+If you are using the tool for a scientific project please consider citing our publications:
 
     # SAGE Publications Sage 2025 (Journal Paper)
     @article{friederich2025pyspn,
