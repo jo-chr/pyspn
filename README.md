@@ -11,7 +11,17 @@ A lightweight tool for modeling and simulation of Stochastic Petri Nets (SPNs).
 
 :information_source: *Tested with Python 3.11*
 
-### via git
+### Prerequisite: Install Graphviz
+
+Make sure Graphviz is installed **system-wide** by [downloading and executing the installer](https://graphviz.org/download/) (tested with version 8.1.0).  
+Ensure the Graphviz executables are added to your `PATH` environment variable.
+
+- Add ```C:\Program Files\Graphviz\bin``` to **User Path**
+- Add ```C:\Program Files\Graphviz\bin\dot.exe``` to **System Path**
+
+> You may need to restart your terminal or IDE after changing environment variables.
+
+### Setup PySPN via git
 
 ```bash
 git clone https://github.com/jo-chr/pyspn.git  # 1. Clone repository
