@@ -106,17 +106,8 @@ or by using a function call
 t1.set_memory_policy("AGE")
 ```
 
-### Join  and Fork Transitions
-To configure a transition that joins two or more input places, set the "Join" parameter to True. 
-This indicates that the transition will act upon the confluence of tokens from multiple places.
-```bash
-t1 = Transition(label="", t_type="", Join=True)
-```
-Similarly, to set up a transition that splits its output to multiple places, utilize the "Fork" parameter. 
-Setting split to True designates that the transition's output will be distributed to several output places.
-```bash
-t1 = Transition(label="", t_type="", Fork=True)
-```
+### Join and Fork Transitions
+In our recent update, transitions with join and fork situation are automatically detected.
 
 ## Export & Import of SPNs
 
