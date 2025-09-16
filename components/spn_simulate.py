@@ -229,13 +229,14 @@ def fire_transition(transition: Transition):
             for index in range(iarc.multiplicity):
                 if iarc.from_place.tokens:
                     token_id = iarc.from_place.tokens.pop(0)
-                    write_to_event_log(SIMULATION_TIME, token_id, transition.label)  # Log every token movement
         if transition.counter <= len(transition.output_arcs):
+            if transition.counter <= len(transition.output_arcs):
+                iarc.from_place.tokens.append(token_id)
+                write_to_event_log(SIMULATION_TIME, token_id, transition.label)
             for oarc in transition.output_arcs:
                 for index in range(oarc.multiplicity):
                     new_token = Token()
                     oarc.to_place.tokens.append(new_token.id)
-                    write_to_event_log(SIMULATION_TIME, new_token.id, transition.label)  # Log new token
                     if index == oarc.multiplicity - 1 and PROTOCOL:
                         write_to_protocol(iarc.from_place.label, SIMULATION_TIME, len(iarc.from_place.tokens))
                         write_to_protocol(oarc.to_place.label, SIMULATION_TIME,len(oarc.to_place.tokens))
